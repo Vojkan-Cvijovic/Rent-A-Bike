@@ -24,10 +24,9 @@ module.exports.updateBike = async event => {
         if (data.Attributes) {
             return sendResponse(200, data.Attributes);
         } else {
-            return sendResponse(404, {message: "Could not find bike with id " + id});
+            return sendResponse(404, { message: "Could not find bike with id " + id });
         }
     } catch (e) {
-        return sendResponse(500, {message: "Internal server error"});
-
+        return sendResponse(500, { message: "Internal server error" });
     }
 };

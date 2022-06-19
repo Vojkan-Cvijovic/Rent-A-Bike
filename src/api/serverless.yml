@@ -3,7 +3,7 @@ service: bikes-service-api
 provider:
   name: aws
   region: eu-central-1
-  runtime: nodejs16.x
+  runtime: nodejs14.x
   environment:
     BIKES_TABLE_NAME: bikes
   iamRoleStatements:
@@ -18,13 +18,13 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.BIKES_TABLE_NAME}"
 
 functions:
-#  list:
-#    handler: functions/bikes/list.listBike
-#    events:
-#      - http:
-#          path: bikes/list
-#          method: get
-#          cors: true
+  list:
+    handler: functions/bikes/list.listBikes
+    events:
+      - http:
+          path: bikes/list
+          method: get
+          cors: true
   create:
     handler: functions/bikes/create.createBike
     events:
