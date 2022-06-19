@@ -3,7 +3,7 @@ service: bikes-service-api
 provider:
   name: aws
   region: eu-central-1
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   environment:
     BIKES_TABLE_NAME: bikes
   iamRoleStatements:
@@ -32,13 +32,13 @@ functions:
           path: bikes/create
           method: post
           cors: true
-#  get:
-#    handler: functions/bikes/get.getBike
-#    events:
-#      - http:
-#          path: bikes/{id}
-#          method: get
-#          cors: true
+  get:
+    handler: functions/bikes/get.getBike
+    events:
+      - http:
+          path: bikes/{id}
+          method: get
+          cors: true
 #  update:
 #    handler: functions/bikes/update.updateBike
 #    events:
@@ -78,5 +78,4 @@ resources:
           ReadCapacityUnits: 1   # determine actual values?
           WriteCapacityUnits: 1  # same
         TableName: ${self:provider.environment.BIKES_TABLE_NAME}
-plugins:
-  - serverless-dynamodb-local
+
