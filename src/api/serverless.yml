@@ -1,8 +1,9 @@
-service: bike-service-api
+service: bikes-service-api
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  region: eu-central-1
+  runtime: nodejs14.x
   environment:
     BIKES_TABLE_NAME: bikes
   iamRoleStatements:
@@ -17,51 +18,59 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.BIKES_TABLE_NAME}"
 
 functions:
-  list:
-    handler: functions/bikes/list
-    events:
-      - http:
-          path: bikes/list
-          method: get
-          cors: true
+#  list:
+#    handler: functions/bikes/list.listBike
+#    events:
+#      - http:
+#          path: bikes/list
+#          method: get
+#          cors: true
   create:
-    handler: functions/bikes/create
+    handler: functions/bikes/create.createBike
     events:
       - http:
           path: bikes/create
           method: post
           cors: true
-  get:
-    handler: functions/bikes/get
-    events:
-      - http:
-          path: bikes/{id}
-          method: get
-          cors: true
-  update:
-    handler: functions/bikes/update
-    events:
-      - http:
-          path: bikes/update
-          method: patch
-          cors: true
-  delete:
-    handler: functions/bikes/delete
-    events:
-      - http:
-          path: bikes/delete
-          method: delete
-          cors: true
+#  get:
+#    handler: functions/bikes/get.getBike
+#    events:
+#      - http:
+#          path: bikes/{id}
+#          method: get
+#          cors: true
+#  update:
+#    handler: functions/bikes/update.updateBike
+#    events:
+#      - http:
+#          path: bikes/update
+#          method: patch
+#          cors: true
+#  delete:
+#    handler: functions/bikes/delete.updateBike
+#    events:
+#      - http:
+#          path: bikes/delete
+#          method: delete
+#          cors: true
 
 resources:
   Resources:
     UsersDynamoDbTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: manufacturer
+            AttributeType: S
+          - AttributeName: location
+            AttributeType: S
+          - AttributeName: active
+            AttributeType: B
+          - AttributeName: used
+            AttributeType: B
         KeySchema:
           - AttributeName: id
             KeyType: HASH
@@ -69,3 +78,5 @@ resources:
           ReadCapacityUnits: 1   # determine actual values?
           WriteCapacityUnits: 1  # same
         TableName: ${self:provider.environment.BIKES_TABLE_NAME}
+plugins:
+  - serverless-dynamodb-local
