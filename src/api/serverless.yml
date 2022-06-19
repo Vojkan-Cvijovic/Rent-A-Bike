@@ -39,13 +39,13 @@ functions:
           path: bikes/{id}
           method: get
           cors: true
-#  update:
-#    handler: functions/bikes/update.updateBike
-#    events:
-#      - http:
-#          path: bikes/update
-#          method: patch
-#          cors: true
+  update:
+    handler: functions/bikes/update.updateBike
+    events:
+      - http:
+          path: bikes/update
+          method: patch
+          cors: true
 #  delete:
 #    handler: functions/bikes/delete.updateBike
 #    events:
