@@ -6,6 +6,8 @@ provider:
   runtime: nodejs14.x
   environment:
     BIKES_TABLE_NAME: bikes
+    user_pool_id: { Ref: CognitoUserPool }
+    client_id: { Ref: UserClient }
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -25,6 +27,10 @@ functions:
           path: bikes/list
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   create:
     handler: functions/bikes/create.createBike
     events:
@@ -32,6 +38,10 @@ functions:
           path: bikes/create
           method: post
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   get:
     handler: functions/bikes/get.getBike
     events:
@@ -46,6 +56,10 @@ functions:
           path: bikes/update
           method: patch
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   delete:
     handler: functions/bikes/delete.deleteBike
     events:
@@ -53,6 +67,10 @@ functions:
           path: bikes/delete
           method: delete
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
 resources:
   Resources:
@@ -78,4 +96,43 @@ resources:
           ReadCapacityUnits: 1   # determine actual values?
           WriteCapacityUnits: 1  # same
         TableName: ${self:provider.environment.BIKES_TABLE_NAME}
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        MfaConfiguration: OFF
+        UserPoolName: user-pool
+        Schema:
+          - Name: email
+            Required: true
+            Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: False
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+        AutoVerifiedAttributes: [ "email" ]
+    UserClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: user-pool-client
+        GenerateSecret: false
+        UserPoolId: { Ref: CognitoUserPool }
+        AccessTokenValidity: 5 # in hours
+        IdTokenValidity: 5
+#        ExplicitAuthFlows:
+#          - "ADMIN_NO_SRP_AUTH"
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-authorizer
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt: [ CognitoUserPool, Arn ]
 
