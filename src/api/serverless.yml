@@ -7,7 +7,7 @@ provider:
   environment:
     BIKES_TABLE_NAME: bikes
     user_pool_id: { Ref: CognitoUserPool }
-    client_id: { Ref: UserClient }
+    client_id: { Ref: CognitoUserPoolClient }
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -49,6 +49,10 @@ functions:
           path: bikes/{id}
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   update:
     handler: functions/bikes/update.updateBike
     events:
@@ -101,23 +105,25 @@ resources:
       Properties:
         MfaConfiguration: OFF
         UserPoolName: user-pool
+        UsernameAttributes:
+          - email
         Schema:
-          - Name: email
-            Required: true
-            Mutable: true
+          - AttributeDataType: String
+            Name: email
+            Required: false
         Policies:
           PasswordPolicy:
-            MinimumLength: 6
-            RequireLowercase: False
+            MinimumLength: 8
+            RequireLowercase: True
             RequireNumbers: True
-            RequireSymbols: False
+            RequireSymbols: True
             RequireUppercase: True
         AutoVerifiedAttributes: [ "email" ]
-    UserClient:
+    CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         ClientName: user-pool-client
-        GenerateSecret: false
+        GenerateSecret: true #?
         UserPoolId: { Ref: CognitoUserPool }
         AccessTokenValidity: 5 # in hours
         IdTokenValidity: 5
@@ -135,4 +141,24 @@ resources:
         Type: COGNITO_USER_POOLS
         ProviderARNs:
           - Fn::GetAtt: [ CognitoUserPool, Arn ]
+#    CognitoIdentityPool:
+#      Type: AWS::Cognito::IdentityPool
+#      Properties:
+#        IdentityPoolName: IdentityPool
+#        AllowUnauthenticatedIdentities: false
+#        # Link to our User Pool
+#        CognitoIdentityProviders:
+#          - ClientId:
+#              Ref: CognitoUserPoolClient
+#            ProviderName:
+#              Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
+#      # IAM roles
+#    CognitoIdentityPoolRoles:
+#      Type: AWS::Cognito::IdentityPoolRoleAttachment
+#      Properties:
+#        IdentityPoolId:
+#          Ref: CognitoIdentityPool
+#        Roles:
+#          authenticated:
+#            Fn::GetAtt: [ CognitoAuthRole, Arn ]
 
