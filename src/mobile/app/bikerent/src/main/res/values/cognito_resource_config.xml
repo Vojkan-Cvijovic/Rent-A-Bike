@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="identity_pool_id">eu-central-1:69ec3349-f177-4c05-b86b-7becf09c0fb4d</string>
+    <string name="user_pool_id">eu-central-1_nUSA8BboR</string>
+    <string name="client_id">5qncb5bc3laerg3h0vdfa7mlsj</string>
+    <string name="client_secret">qb80md7ogif2po3akhruegf04n30ca62q893kndv519tptdj70r</string>
+</resources>
