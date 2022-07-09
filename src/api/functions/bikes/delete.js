@@ -16,6 +16,7 @@ module.exports.deleteBike = async event => {
         await dynamoDb.delete(params).promise();
         return sendResponse(200, { message: "Removed bike with id " + id});
     } catch (e) {
+        console.log(e);
         return sendResponse(500, {message: "Internal server error"});
     }
 };

@@ -25,6 +25,7 @@ module.exports.createBike = async event => {
         await dynamoDb.put(params).promise();
         return sendResponse(200, { message: 'Bike created successfully with id ' + id });
     } catch (e) {
+        console.log(e);
         return sendResponse(500, { message: 'Could not create the bike with id ' + id });
     }
 };

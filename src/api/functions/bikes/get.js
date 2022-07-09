@@ -17,11 +17,12 @@ module.exports.getBike = async event => {
 
         const data = await dynamoDb.query(params).promise();
         if (data.Count > 0) {
-            return sendResponse(200, {payload: data.Items});
+            return sendResponse(200, data.Items);
         } else {
             return sendResponse(404, {message: "Bike not found"});
         }
     } catch (e) {
+        console.log(e);
         return sendResponse(500, {message: "Internal error"});
     }
 };
