@@ -35,7 +35,7 @@ functions:
     handler: functions/bikes/listAvailable.listAvailableBikes
     events:
       - http:
-          path: bikes/list/available
+          path: bikes/list/available/location/{location}
           method: get
           cors: true
           authorizer:
@@ -49,10 +49,10 @@ functions:
           path: bikes/list/locations
           method: get
           cors: true
-            authorizer:
-              type: COGNITO_USER_POOLS
-              authorizerId:
-                Ref: ApiGatewayAuthorizer
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   create:
     handler: functions/bikes/create.createBike
     events:
@@ -93,10 +93,10 @@ functions:
           path: bikes/update/active
           method: patch
           cors: true
-            authorizer:
-              type: COGNITO_USER_POOLS
-              authorizerId:
-                Ref: ApiGatewayAuthorizer
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   delete:
     handler: functions/bikes/delete.deleteBike
     events:
