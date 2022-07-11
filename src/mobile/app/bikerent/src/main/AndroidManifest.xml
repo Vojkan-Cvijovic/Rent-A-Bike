@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.BikeRent">
-        <activity android:name=".CredentialsStatusPage">
+        <activity android:name=".ShowLocationsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -19,5 +19,7 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".ConfirmSignUpActivity" />
         <activity android:name=".SignUpActivity"/>
+        <activity android:name=".ShowBikesActivity"/>
+        <activity android:name=".BikeRentingActivity"/>
     </application>
 </manifest>

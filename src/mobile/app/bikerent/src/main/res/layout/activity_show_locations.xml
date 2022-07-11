@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CredentialsStatusPage"
+    tools:context=".ShowLocationsActivity"
     android:gravity="center"
     android:padding="75dp"
     android:orientation="vertical">
@@ -14,7 +14,30 @@
       android:layout_height="247dp"
       android:divider="#f00"
       android:dividerHeight="1dp"
-      android:listSelector="#677BEA"/>
+      android:listSelector="#B9BFE3"/>
+
+  <LinearLayout
+      android:id="@+id/select_info"
+      android:layout_width="match_parent"
+      android:layout_height="90dp">
+
+    <Button
+        android:id="@+id/select_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:text="@string/select" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:text="@string/reset" />
+
+  </LinearLayout>
 
   <TextView
       android:id="@+id/message"
@@ -25,7 +48,7 @@
       android:layout_height="wrap_content"
       android:text="@string/empty" />
   <LinearLayout
-      android:id="@+id/session_info"
+      android:id="@+id/sign_out_info"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">

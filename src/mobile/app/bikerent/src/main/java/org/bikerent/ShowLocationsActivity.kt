@@ -11,33 +11,58 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
-import org.bikerent.databinding.ActivityCredentialsStatusBinding
+import org.bikerent.databinding.ActivityShowLocationsBinding
 import org.nosemaj.kosmos.Tokens
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class CredentialsStatusPage : AppCompatActivity() {
-    private lateinit var view: ActivityCredentialsStatusBinding
+class ShowLocationsActivity : AppCompatActivity() {
+    private lateinit var view: ActivityShowLocationsBinding
     private val auth get() = (applicationContext as BikeRentApp).auth
+    private var selectedLocation = R.string.empty.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        view = ActivityCredentialsStatusBinding.inflate(layoutInflater)
+        view = ActivityShowLocationsBinding.inflate(layoutInflater)
         setContentView(view.root)
         view.signOutButton.setOnClickListener {
             signOut()
         }
-        displayMessage(intent.getStringExtra("message"))
+
+        view.selectButton.isEnabled = false
+        view.selectButton.setOnClickListener {
+            select()
+        }
+        view.resetButton.isEnabled = false
+        view.resetButton.setOnClickListener {
+            reset()
+        }
+
         navigate()
     }
 
     private fun signOut() {
         lifecycleScope.launch {
             auth.signOut()
-            view.sessionInfo.visibility = INVISIBLE
-            displayMessage("Signed out!")
+            goToSignIn(source = this@ShowLocationsActivity, getUsername())
+        }
+    }
+
+    private fun select() {
+        lifecycleScope.launch {
+            displayMessage(null)
+            goToShowBikesPage(source = this@ShowLocationsActivity, getUsername(), selectedLocation)
+        }
+    }
+
+    private fun reset() {
+        lifecycleScope.launch {
+            displayMessage(null)
+            selectedLocation = R.string.empty.toString()
+            view.selectButton.isEnabled = false
+            view.resetButton.isEnabled = false
         }
     }
 
@@ -45,7 +70,7 @@ class CredentialsStatusPage : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             when (val token = auth.tokens()) {
                 is Tokens.ValidTokens -> displayLocations(token.idToken)
-                else -> goToSignIn(source = this@CredentialsStatusPage)
+                else -> goToSignIn(source = this@ShowLocationsActivity, getUsername())
             }
         }
     }
@@ -87,8 +112,10 @@ class CredentialsStatusPage : AppCompatActivity() {
                 )
                 mListView.adapter = arrayAdapter
                 mListView.setOnItemClickListener { parent, _, position, _ ->
-                    val selectedItem = parent.getItemAtPosition(position) as String
-                    displayMessage( "Selected $selectedItem")
+                    selectedLocation = parent.getItemAtPosition(position) as String
+                    displayMessage( "Click Select to continue!")
+                    view.selectButton.isEnabled = true
+                    view.resetButton.isEnabled = true
                 }
                 view.message.visibility = INVISIBLE
 
@@ -102,10 +129,21 @@ class CredentialsStatusPage : AppCompatActivity() {
         })
 
     }
+    private fun getUsername(): String {
+        val extras = intent.extras
+        if (extras != null) {
+            if (extras.getString(R.string.username.toString()) != null) {
+                return extras.getString(R.string.username.toString())!!
+            }
+        }
+        return R.string.empty.toString()
+    }
 }
 
-fun goToCredentialsStatus(origin: Activity, message: String) {
-    val intent = Intent(origin, CredentialsStatusPage::class.java)
-    intent.putExtra("message", message)
+fun goToShowLocationsPage(origin: Activity, username: String) {
+    val intent = Intent(origin, ShowLocationsActivity::class.java)
+    intent.putExtra(R.string.username.toString(), username)
     origin.startActivity(intent)
 }
+
+

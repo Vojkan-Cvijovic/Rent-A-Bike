@@ -13,4 +13,14 @@
     <string name="need_an_account_sign_up">Need an account? Sign up</string>
     <string name="sign_out">Sign out</string>
     <string name="empty" />
+    <string name="rent">Rent</string>
+    <string name="reset">Reset</string>
+    <string name="finish">Finish</string>
+    <string name="back">Back</string>
+    <string name="select">Select</string>
+    <string name="username">username</string>
+    <string name="location">location</string>
+    <string name="bike_id">bike_id</string>
+    <string name="bike_year">bike_year</string>
+    <string name="bike_manufacturer">bike_manufacturer</string>
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ShowBikesActivity"
+    android:gravity="center"
+    android:padding="75dp"
+    android:orientation="vertical">
+
+  <TextView
+      android:id="@+id/message"
+      android:gravity="center"
+      android:textAlignment="center"
+      android:textSize="30sp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/empty" />
+
+  <LinearLayout
+      android:id="@+id/finish_info"
+      android:layout_width="match_parent"
+      android:layout_height="90dp">
+
+    <Button
+        android:id="@+id/finish_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/finish" />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/back_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/back"
+        />
+  </LinearLayout>
+
+</LinearLayout>

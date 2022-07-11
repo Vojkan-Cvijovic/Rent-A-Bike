@@ -30,7 +30,7 @@ class SignInActivity : AppCompatActivity() {
             val username = view.username.text.toString()
             val password = view.password.text.toString()
             auth.signIn(username, password)
-            goToCredentialsStatus(this@SignInActivity, "Sign in complete.")
+            goToShowLocationsPage(this@SignInActivity, username)
         }
     }
 }
