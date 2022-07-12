@@ -1,0 +1,88 @@
+list:
+  handler: functions/bikes/list.listBikes
+  events:
+    - http:
+        path: bikes/list/all
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+listAvailable:
+  handler: functions/bikes/listAvailable.listAvailableBikes
+  events:
+    - http:
+        path: bikes/list/available/location/{location}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+listLocations:
+  handler: functions/bikes/listLocations.listLocations
+  events:
+    - http:
+        path: bikes/list/locations
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+create:
+  handler: functions/bikes/create.createBike
+  events:
+    - http:
+        path: bikes/create
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+get:
+  handler: functions/bikes/get.getBike
+  events:
+    - http:
+        path: bikes/{id}
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+updateUsed:
+  handler: functions/bikes/updateUsed.updateBikeUsed
+  events:
+    - http:
+        path: bikes/update/used
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+updateActive:
+  handler: functions/bikes/updateActive.updateBikeActive
+  events:
+    - http:
+        path: bikes/update/active
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+delete:
+  handler: functions/bikes/delete.deleteBike
+  events:
+    - http:
+        path: bikes/delete
+        method: delete
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
