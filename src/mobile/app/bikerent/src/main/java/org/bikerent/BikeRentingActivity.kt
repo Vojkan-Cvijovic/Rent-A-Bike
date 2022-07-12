@@ -9,9 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.bikerent.api.RetrofitClient
 import org.bikerent.api.model.Bike
+import org.bikerent.api.model.BikeStatus
 import org.bikerent.databinding.ActivityBikeRentingBinding
 import org.nosemaj.kosmos.Tokens
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class BikeRentingActivity : AppCompatActivity() {
@@ -44,7 +49,37 @@ class BikeRentingActivity : AppCompatActivity() {
     }
 
     private fun finishRenting() {
-        TODO("Not yet implemented")
+        lifecycleScope.launch(Dispatchers.IO) {
+            when (val token = auth.tokens()) {
+                is Tokens.ValidTokens -> rentBike(token.idToken, bikeId)
+                else -> goToSignIn(source = this@BikeRentingActivity)
+            }
+        }
+    }
+
+
+    private fun rentBike(token: String, bikeId: String) {
+        val bikeStatus = BikeStatus(bikeId, false)
+
+        val call = RetrofitClient.getInstance().service.updateBike(token, bikeStatus)
+
+        call.enqueue(object : Callback<BikeStatus?> {
+            override fun onResponse(
+                call: Call<BikeStatus?>,
+                response: Response<BikeStatus?>
+            ) {
+                if(response.code() in 200..299) {
+                    goToShowBikesPage(this@BikeRentingActivity, username, bikeLocation)
+                } else {
+                    displayMessage("Failed to rent bike " + response.code())
+                }
+            }
+
+            override fun onFailure(call: Call<BikeStatus?>, t: Throwable) {
+                displayMessage("An error has occurred " + t.message)
+            }
+        })
+
     }
 
     private fun navigate() {
@@ -80,12 +115,12 @@ class BikeRentingActivity : AppCompatActivity() {
     }
 
 }
-fun goToBikeRenting(source: Activity, username: String? = null, bike: Bike) {
+fun goToBikeRentingPage(source: Activity, username: String? = null, bike: Bike) {
     val intent = Intent(source, BikeRentingActivity::class.java)
     intent.putExtra(R.string.username.toString(), username)
     intent.putExtra(R.string.bike_id.toString(), bike.id)
     intent.putExtra(R.string.location.toString(), bike.location)
     intent.putExtra(R.string.bike_manufacturer.toString(), bike.manufacturer)
-    //intent.putExtra(R.string.bike_year.toString(), bike.year)
+    intent.putExtra(R.string.bike_year.toString(), bike.year)
     source.startActivity(intent)
 }

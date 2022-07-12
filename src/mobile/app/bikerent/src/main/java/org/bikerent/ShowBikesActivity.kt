@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
 import org.bikerent.api.model.Bike
+import org.bikerent.api.model.BikeStatus
 import org.bikerent.databinding.ActivityShowBikesBinding
 import org.nosemaj.kosmos.Tokens
 import retrofit2.Call
@@ -23,7 +24,8 @@ class ShowBikesActivity : AppCompatActivity() {
     private lateinit var view: ActivityShowBikesBinding
     private val auth get() = (applicationContext as BikeRentApp).auth
 
-    var location = R.string.empty.toString()
+    var location = ""
+    var username = ""
     var selectedBike: Bike? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +35,13 @@ class ShowBikesActivity : AppCompatActivity() {
 
         val location = getSelectedLocation()
         if (location == null) {
-            goToShowLocationsPage(this@ShowBikesActivity, getUsername())
+            goToShowLocationsPage(this@ShowBikesActivity, getProvidedUsername())
         } else {
             this.location = location
         }
+
+        this.username = getProvidedUsername()
+
         view.signOutButton.setOnClickListener {
             signOut()
         }
@@ -49,7 +54,7 @@ class ShowBikesActivity : AppCompatActivity() {
             reset()
         }
         view.backButton.setOnClickListener {
-            goToShowLocationsPage(this@ShowBikesActivity, getUsername())
+            goToShowLocationsPage(this@ShowBikesActivity, username)
         }
         navigate()
     }
@@ -57,11 +62,11 @@ class ShowBikesActivity : AppCompatActivity() {
     private fun signOut() {
         lifecycleScope.launch {
             auth.signOut()
-            goToSignIn(source = this@ShowBikesActivity, getUsername())
+            goToSignIn(source = this@ShowBikesActivity, username)
         }
     }
 
-    private fun getUsername(): String {
+    private fun getProvidedUsername(): String {
         val extras = intent.extras
         if (extras != null) {
             if (extras.getString(R.string.username.toString()) != null) {
@@ -81,11 +86,44 @@ class ShowBikesActivity : AppCompatActivity() {
 
     private fun rent() {
         lifecycleScope.launch {
-            displayMessage(null)
-            if (selectedBike != null) {
-                goToBikeRenting(source = this@ShowBikesActivity, getUsername(), selectedBike!!)
+            rentBike(selectedBike!!)
+        }
+    }
+
+    private fun rentBike(selectedBike: Bike) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            when (val token = auth.tokens()) {
+                is Tokens.ValidTokens -> rentBike(token.idToken, selectedBike)
+                else -> goToSignIn(source = this@ShowBikesActivity)
             }
         }
+    }
+
+    private fun rentBike(token: String, selectedBike: Bike) {
+        val bikeStatus = BikeStatus(selectedBike.id, true)
+
+        val call = RetrofitClient.getInstance().service.updateBike(token, bikeStatus)
+
+        call.enqueue(object : Callback<BikeStatus?> {
+            override fun onResponse(
+                call: Call<BikeStatus?>,
+                response: Response<BikeStatus?>
+            ) {
+                if(response.code() in 200..299) {
+                    goToBikeRentingPage(source = this@ShowBikesActivity, username,
+                        selectedBike
+                    )
+                } else {
+                    displayMessage("Failed to rent bike " + response.code())
+                }
+            }
+
+            override fun onFailure(call: Call<BikeStatus?>, t: Throwable) {
+                displayMessage("An error has occurred " + t.message)
+                view.bikeList.visibility = INVISIBLE
+            }
+        })
+
     }
 
     private fun reset() {

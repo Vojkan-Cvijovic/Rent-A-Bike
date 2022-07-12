@@ -12,9 +12,13 @@
       android:id="@+id/bike_list"
       android:layout_width="match_parent"
       android:layout_height="247dp"
-      android:divider="#f00"
+      android:choiceMode="singleChoice"
+      android:divider="@color/black"
       android:dividerHeight="1dp"
-      android:listSelector="#B9BFE3"/>
+      android:headerDividersEnabled="true"
+      android:clickable="true"
+      android:listSelector="#B9BFE3"
+      android:focusable="true"/>
 
   <TextView
       android:id="@+id/message"

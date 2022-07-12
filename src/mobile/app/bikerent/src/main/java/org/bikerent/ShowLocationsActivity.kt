@@ -22,6 +22,7 @@ class ShowLocationsActivity : AppCompatActivity() {
     private lateinit var view: ActivityShowLocationsBinding
     private val auth get() = (applicationContext as BikeRentApp).auth
     private var selectedLocation = R.string.empty.toString()
+    private var username = R.string.empty.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,26 +41,30 @@ class ShowLocationsActivity : AppCompatActivity() {
             reset()
         }
 
+        username = getProvidedUsername()
+
         navigate()
     }
 
     private fun signOut() {
         lifecycleScope.launch {
             auth.signOut()
-            goToSignIn(source = this@ShowLocationsActivity, getUsername())
+            goToSignIn(source = this@ShowLocationsActivity, username)
         }
     }
 
     private fun select() {
         lifecycleScope.launch {
             displayMessage(null)
-            goToShowBikesPage(source = this@ShowLocationsActivity, getUsername(), selectedLocation)
+            goToShowBikesPage(source = this@ShowLocationsActivity, username, selectedLocation)
         }
     }
 
     private fun reset() {
         lifecycleScope.launch {
             displayMessage(null)
+            // TODO still selected?
+            view.locationList.setItemChecked(-1, true)
             selectedLocation = R.string.empty.toString()
             view.selectButton.isEnabled = false
             view.resetButton.isEnabled = false
@@ -70,7 +75,7 @@ class ShowLocationsActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             when (val token = auth.tokens()) {
                 is Tokens.ValidTokens -> displayLocations(token.idToken)
-                else -> goToSignIn(source = this@ShowLocationsActivity, getUsername())
+                else -> goToSignIn(source = this@ShowLocationsActivity, username)
             }
         }
     }
@@ -113,7 +118,7 @@ class ShowLocationsActivity : AppCompatActivity() {
                 mListView.adapter = arrayAdapter
                 mListView.setOnItemClickListener { parent, _, position, _ ->
                     selectedLocation = parent.getItemAtPosition(position) as String
-                    displayMessage( "Click Select to continue!")
+                    //displayMessage( "Click Select to continue!")
                     view.selectButton.isEnabled = true
                     view.resetButton.isEnabled = true
                 }
@@ -129,14 +134,14 @@ class ShowLocationsActivity : AppCompatActivity() {
         })
 
     }
-    private fun getUsername(): String {
+    private fun getProvidedUsername(): String {
         val extras = intent.extras
         if (extras != null) {
             if (extras.getString(R.string.username.toString()) != null) {
                 return extras.getString(R.string.username.toString())!!
             }
         }
-        return R.string.empty.toString()
+        return ""
     }
 }
 

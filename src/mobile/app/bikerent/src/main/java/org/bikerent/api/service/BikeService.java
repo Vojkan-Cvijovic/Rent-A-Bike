@@ -1,6 +1,7 @@
 package org.bikerent.api.service;
 
 import org.bikerent.api.model.Bike;
+import org.bikerent.api.model.BikeStatus;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface BikeService {
     Call<List<Bike>> listAvailableBikes(@Header("Authorization") String authorization, @Path("selectedLocation") String location);
 
     @PATCH("bikes/update/used")
-    Call<Bike> updateBike(@Header("Authorization") String authorization, @Body Bike bike);
+    Call<BikeStatus> updateBike(@Header("Authorization") String authorization, @Body BikeStatus bike);
 
 }

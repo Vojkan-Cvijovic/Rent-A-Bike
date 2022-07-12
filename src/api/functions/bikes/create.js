@@ -8,7 +8,7 @@ module.exports.createBike = async event => {
     const body = JSON.parse(event.body);
     const id = uuid.v1();
     try {
-        const { manufacturer, location, active } = body;
+        const { manufacturer, year, location, active } = body;
         const used = false
         const TableName = process.env.BIKES_TABLE_NAME;
         const params = {
@@ -16,6 +16,7 @@ module.exports.createBike = async event => {
             Item: {
                 id,
                 manufacturer,
+                year,
                 location,
                 active,
                 used
