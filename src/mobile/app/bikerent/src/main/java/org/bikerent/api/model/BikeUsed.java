@@ -1,10 +1,10 @@
 package org.bikerent.api.model;
 
-public class BikeStatus {
+public class BikeUsed {
     String id;
     boolean used;
 
-    public BikeStatus(String id, boolean used) {
+    public BikeUsed(String id, boolean used) {
         this.id = id;
         this.used = used;
     }
@@ -16,4 +16,5 @@ public class BikeStatus {
     public boolean isUsed() {
         return used;
     }
+
 }

@@ -8,6 +8,7 @@ import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
@@ -41,7 +42,7 @@ class ShowLocationsActivity : AppCompatActivity() {
             reset()
         }
 
-        username = getProvidedUsername()
+        username = getProperty(R.string.username.toString())
 
         navigate()
     }
@@ -90,7 +91,6 @@ class ShowLocationsActivity : AppCompatActivity() {
     }
 
     private fun displayLocations(token: String) {
-
         val call = RetrofitClient.getInstance().service.listBikeLocations(token)
         call.enqueue(object : Callback<List<String?>?> {
             override fun onResponse(
@@ -134,14 +134,13 @@ class ShowLocationsActivity : AppCompatActivity() {
         })
 
     }
-    private fun getProvidedUsername(): String {
+
+    private fun getProperty(propertyName: String): String {
         val extras = intent.extras
         if (extras != null) {
-            if (extras.getString(R.string.username.toString()) != null) {
-                return extras.getString(R.string.username.toString())!!
-            }
+            return extras.getString(propertyName)!!
         }
-        return ""
+        return R.string.empty.toString()
     }
 }
 

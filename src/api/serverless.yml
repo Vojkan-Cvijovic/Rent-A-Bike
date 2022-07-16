@@ -3,6 +3,7 @@ service: bikes-service-api
 provider:
   name: aws
   region: eu-central-1
+  stage: stage
   runtime: nodejs14.x
   environment:
     BIKES_TABLE_NAME: bikes

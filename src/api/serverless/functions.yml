@@ -2,7 +2,7 @@ list:
   handler: functions/bikes/list.listBikes
   events:
     - http:
-        path: bikes/list/all
+        path: bikes/list/all/location/{location}
         method: get
         cors: true
         authorizer:
@@ -79,7 +79,7 @@ delete:
   handler: functions/bikes/delete.deleteBike
   events:
     - http:
-        path: bikes/delete
+        path: bikes/delete/{id}
         method: delete
         cors: true
         authorizer:

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ShowLocationsActivity"
+    android:gravity="center"
+    android:padding="75dp"
+    android:orientation="vertical">
+
+  <ListView
+      android:id="@+id/location_list"
+      android:layout_width="wrap_content"
+      android:layout_height="100dp"
+      android:choiceMode="singleChoice"
+      android:clickable="true"
+      android:divider="@color/black"
+      android:dividerHeight="1dp"
+      android:focusable="true"
+      android:headerDividersEnabled="true"
+      android:listSelector="#B9BFE3" />
+
+  <ListView
+      android:id="@+id/bike_list"
+      android:layout_width="wrap_content"
+      android:layout_height="100dp"
+      android:choiceMode="singleChoice"
+      android:clickable="true"
+      android:divider="@color/black"
+      android:dividerHeight="1dp"
+      android:layout_marginTop="40dp"
+      android:focusable="true"
+      android:headerDividersEnabled="true"
+      android:listSelector="#B9BFE3" />
+
+  <LinearLayout
+      android:id="@+id/select_info"
+      android:layout_width="match_parent"
+      android:layout_height="90dp">
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:text="@string/update" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:text="@string/delete" />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/message"
+      android:gravity="center"
+      android:textAlignment="center"
+      android:textSize="30sp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/empty" />
+
+  <Button
+      android:id="@+id/create_bike_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:text="@string/create_bike_button" />
+
+  <LinearLayout
+      android:id="@+id/sign_out_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sign_out" />
+  </LinearLayout>
+</LinearLayout>

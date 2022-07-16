@@ -12,7 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
 import org.bikerent.api.model.Bike
-import org.bikerent.api.model.BikeStatus
+import org.bikerent.api.model.BikeActive
+import org.bikerent.api.model.BikeUsed
 import org.bikerent.databinding.ActivityShowBikesBinding
 import org.nosemaj.kosmos.Tokens
 import retrofit2.Call
@@ -100,14 +101,13 @@ class ShowBikesActivity : AppCompatActivity() {
     }
 
     private fun rentBike(token: String, selectedBike: Bike) {
-        val bikeStatus = BikeStatus(selectedBike.id, true)
+        val bikeUsed = BikeUsed(selectedBike.id, true)
+        val call = RetrofitClient.getInstance().service.updateBike(token, bikeUsed)
 
-        val call = RetrofitClient.getInstance().service.updateBike(token, bikeStatus)
-
-        call.enqueue(object : Callback<BikeStatus?> {
+        call.enqueue(object : Callback<BikeUsed?> {
             override fun onResponse(
-                call: Call<BikeStatus?>,
-                response: Response<BikeStatus?>
+                call: Call<BikeUsed?>,
+                response: Response<BikeUsed?>
             ) {
                 if(response.code() in 200..299) {
                     goToBikeRentingPage(source = this@ShowBikesActivity, username,
@@ -118,7 +118,7 @@ class ShowBikesActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<BikeStatus?>, t: Throwable) {
+            override fun onFailure(call: Call<BikeUsed?>, t: Throwable) {
                 displayMessage("An error has occurred " + t.message)
                 view.bikeList.visibility = INVISIBLE
             }

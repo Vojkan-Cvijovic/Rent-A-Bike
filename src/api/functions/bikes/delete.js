@@ -5,8 +5,7 @@ const { sendResponse } = require("../../utils/common");
 
 module.exports.deleteBike = async event => {
     try {
-        const body = JSON.parse(event.body);
-        const { id } = body;
+        const { id } = event.pathParameters;
         const params = {
             TableName: process.env.BIKES_TABLE_NAME,
             Key: {

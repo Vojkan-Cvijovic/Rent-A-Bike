@@ -11,7 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
 import org.bikerent.api.model.Bike
-import org.bikerent.api.model.BikeStatus
+import org.bikerent.api.model.BikeActive
+import org.bikerent.api.model.BikeUsed
 import org.bikerent.databinding.ActivityBikeRentingBinding
 import org.nosemaj.kosmos.Tokens
 import retrofit2.Call
@@ -41,10 +42,6 @@ class BikeRentingActivity : AppCompatActivity() {
         view.finishButton.setOnClickListener {
             finishRenting()
         }
-        view.backButton.isEnabled = false
-        view.backButton.setOnClickListener {
-            goToShowBikesPage(this@BikeRentingActivity,username, bikeLocation)
-        }
         navigate()
     }
 
@@ -57,16 +54,15 @@ class BikeRentingActivity : AppCompatActivity() {
         }
     }
 
-
     private fun rentBike(token: String, bikeId: String) {
-        val bikeStatus = BikeStatus(bikeId, false)
+        val bikeStatus = BikeUsed(bikeId, false)
 
         val call = RetrofitClient.getInstance().service.updateBike(token, bikeStatus)
 
-        call.enqueue(object : Callback<BikeStatus?> {
+        call.enqueue(object : Callback<BikeUsed?> {
             override fun onResponse(
-                call: Call<BikeStatus?>,
-                response: Response<BikeStatus?>
+                call: Call<BikeUsed?>,
+                response: Response<BikeUsed?>
             ) {
                 if(response.code() in 200..299) {
                     goToShowBikesPage(this@BikeRentingActivity, username, bikeLocation)
@@ -75,7 +71,7 @@ class BikeRentingActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<BikeStatus?>, t: Throwable) {
+            override fun onFailure(call: Call<BikeUsed?>, t: Throwable) {
                 displayMessage("An error has occurred " + t.message)
             }
         })
@@ -101,9 +97,7 @@ class BikeRentingActivity : AppCompatActivity() {
     }
 
     private fun displayBikeRentingData(token: String) {
-
         displayMessage(username + " has successfully rented bike " + bikeManufacturer)
-
     }
 
     private fun getProperty(propertyName: String): String {

@@ -1,5 +1,7 @@
 package org.bikerent.api.model;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Bike {
     String id;
     String location;
@@ -22,6 +24,14 @@ public class Bike {
         this.used = used;
     }
 
+    public Bike(String manufacturer, String year, String location) {
+        this.location = location;
+        this.manufacturer = manufacturer;
+        this.year = year;
+        this.used = false;
+        this.active = true;
+    }
+
     public String getId() {
         return id;
     }
@@ -37,4 +47,14 @@ public class Bike {
     public String getYear() {
         return year;
     }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+
 }

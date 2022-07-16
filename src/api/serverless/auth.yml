@@ -18,6 +18,16 @@ Resources:
           RequireSymbols: True
           RequireUppercase: True
       AutoVerifiedAttributes: [ "email" ]
+  CognitoUserPoolGroupAdminUsers:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: "Group for admin users"
+      GroupName: "admin-users-group"
+      Precedence: 0 #Zero is the highest precedence value
+      RoleArn:
+        Fn::GetAtt: [ CognitoAdminAuthRole, Arn ]
+      UserPoolId:
+        Ref: CognitoUserPool
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -62,6 +72,35 @@ Resources:
 
   # IAM role used for authenticated users
   CognitoAuthRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Federated: 'cognito-identity.amazonaws.com'
+            Action:
+              - 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                'cognito-identity.amazonaws.com:aud':
+                  Ref: CognitoIdentityPool
+              'ForAnyValue:StringLike':
+                'cognito-identity.amazonaws.com:amr': authenticated
+      Policies:
+        - PolicyName: 'CognitoAuthorizedPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'mobileanalytics:PutEvents'
+                  - 'cognito-sync:*'
+                  - 'cognito-identity:*'
+                Resource: '*'
+  CognitoAdminAuthRole:
     Type: AWS::IAM::Role
     Properties:
       Path: /

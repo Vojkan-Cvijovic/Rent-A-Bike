@@ -10,16 +10,18 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.BikeRent">
-        <activity android:name=".ShowLocationsActivity">
+        <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignInActivity" />
+        <activity android:name=".ShowLocationsActivity" />
         <activity android:name=".ConfirmSignUpActivity" />
         <activity android:name=".SignUpActivity"/>
         <activity android:name=".ShowBikesActivity"/>
         <activity android:name=".BikeRentingActivity"/>
+        <activity android:name=".AdminLandingActivity"/>
+        <activity android:name=".AdminCreateBikeActivity"/>
     </application>
 </manifest>

@@ -2,6 +2,7 @@
     <string name="app_name">Bike Rent App</string>
     <string name="sign_up">Sign up</string>
     <string name="password_hint_text">Enter password</string><!-- Not real, just example! -->
+    <string name="wrong_credentials">"Username or password is wrong!</string>
     <string name="email_hint_text">username@gmail.com</string>
     <string name="username_hint_text">username</string>
     <string name="enter_code">Enter code</string>
@@ -18,9 +19,21 @@
     <string name="finish">Finish</string>
     <string name="back">Back</string>
     <string name="select">Select</string>
+    <string name="activate">Activate</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="create_bike_button">Create new bike</string>
+    <string name="create_button">Create</string>
+    <string name="create_new_bike">Create new bike</string>
+    <string name="manufacturer_hint_text">Specify manufacturer</string>
+    <string name="year_hint_text">Specify year</string>
+    <string name="location_hint_text">Specify location</string>
     <string name="username">username</string>
     <string name="location">location</string>
     <string name="bike_id">bike_id</string>
     <string name="bike_year">bike_year</string>
     <string name="bike_manufacturer">bike_manufacturer</string>
+    <string name="admin">admin</string>
+    <string name="admin_group">Admin</string>
+    <string name="cognito_groups">cognito:groups</string>
 </resources>
