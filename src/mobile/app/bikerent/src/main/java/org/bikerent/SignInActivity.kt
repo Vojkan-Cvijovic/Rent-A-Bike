@@ -89,7 +89,7 @@ class SignInActivity : AppCompatActivity() {
 }
 
 fun goToSignIn(source: Activity, username: String? = null, isAdmin: Boolean = false) {
-//    source.finish()
+    source.finish()
     val intent = Intent(source, SignInActivity::class.java)
     intent.putExtra(R.string.username.toString(), username)
     intent.putExtra(R.string.admin.toString(), isAdmin)
