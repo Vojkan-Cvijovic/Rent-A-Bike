@@ -81,7 +81,7 @@ class AdminCreateBikeActivity : AppCompatActivity() {
 
         call.enqueue(object : Callback<Message> {
             override fun onResponse(call: Call<Message>, response: Response<Message>) {
-                displayMessage(response.body()?.message)
+                displayMessage("Bike created")
                 clearInputs()
             }
 

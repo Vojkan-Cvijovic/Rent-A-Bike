@@ -8,7 +8,6 @@ import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.api.RetrofitClient
@@ -16,7 +15,6 @@ import org.bikerent.api.model.Bike
 import org.bikerent.api.model.BikeActive
 import org.bikerent.api.model.Message
 import org.bikerent.databinding.ActivityAdminLandingBinding
-import org.bikerent.databinding.ActivityShowLocationsBinding
 import org.nosemaj.kosmos.Tokens
 import retrofit2.Call
 import retrofit2.Callback
@@ -104,7 +102,7 @@ class AdminLandingActivity : AppCompatActivity() {
             override fun onFailure(call: Call<BikeActive>, t: Throwable) {
                 displayMessage("An error has occurred " + t.message)
             }})
-        loadBikes()
+        displayBikes(idToken, reload=true)
     }
 
     private fun deleteBike() {
@@ -132,8 +130,7 @@ class AdminLandingActivity : AppCompatActivity() {
                 displayMessage("An error has occurred " + t.message)
             }})
 
-        // TODO reload
-        loadBikes()
+        displayBikes(idToken, reload=true)
     }
 
     private fun loadLocations() {
@@ -188,13 +185,13 @@ class AdminLandingActivity : AppCompatActivity() {
     private fun loadBikes() {
         lifecycleScope.launch(Dispatchers.IO) {
             when (val token = auth.tokens()) {
-                is Tokens.ValidTokens -> displayBikes(token.idToken)
+                is Tokens.ValidTokens -> displayBikes(token.idToken, true)
                 else -> goToSignIn(source = this@AdminLandingActivity, username)
             }
         }
     }
 
-    private fun displayBikes(token: String) {
+    private fun displayBikes(token: String, reload: Boolean = false) {
         val call = RetrofitClient.getInstance().service.listAllBikes(token, selectedLocation)
 
         call.enqueue(object : Callback<List<Bike?>?> {
@@ -237,7 +234,9 @@ class AdminLandingActivity : AppCompatActivity() {
                     view.updateButton.isEnabled = true
                     view.deleteButton.isEnabled = true
                 }
-                view.message.visibility = INVISIBLE
+                if (!reload) {
+                    view.message.visibility = INVISIBLE
+                }
             }
 
             override fun onFailure(call: Call<List<Bike?>?>, t: Throwable) {
