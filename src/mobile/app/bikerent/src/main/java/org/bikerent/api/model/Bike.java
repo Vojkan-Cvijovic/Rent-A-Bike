@@ -1,7 +1,5 @@
 package org.bikerent.api.model;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Bike {
     String id;
     String location;
