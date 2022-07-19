@@ -34,21 +34,23 @@
         android:inputType="textPassword"
         android:autofillHints="@string/password_hint_text" />
 
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#ED4B4B"
+        android:textSize="15sp" />
+
     <Button
         android:id="@+id/submit_button"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_up" />
-
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:text=""
-        android:textAlignment="center"
-        android:textSize="30sp" />
 
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.auth0.android.jwt.JWT
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bikerent.databinding.ActivitySignInBinding
@@ -28,11 +29,13 @@ class SignInActivity : AppCompatActivity() {
         view.submitButton.setOnClickListener {
             view.submitButton.isEnabled = false
             signIn()
+            view.submitButton.isEnabled = true
         }
         view.signUpLinkText.isEnabled = true
         view.signUpLinkText.setOnClickListener {
             view.submitButton.isEnabled = false
             goToSignUp(source = this)
+            view.submitButton.isEnabled = true
         }
     }
 
@@ -41,10 +44,14 @@ class SignInActivity : AppCompatActivity() {
             val username = view.username.text.toString()
             val password = view.password.text.toString()
 
+            if (!validUsername(username) || !validPassword(password)) {
+                return@launch
+            }
+
             try {
                 auth.signIn(username, password)
             } catch (e: Exception) {
-                displayMessage("Username or password is wrong!")
+                displayMessage(Gson().fromJson(e.message, SignUpActivity.AWSErrorResponse::class.java).message);
                 return@launch
             }
             displayMessage(null)
@@ -62,15 +69,25 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun isAdminUser(auth: Auth): Boolean {
-        var isAdmin = false
-        lifecycleScope.launch(Dispatchers.IO) {
-            when (val token = auth.tokens()) {
-                is Tokens.ValidTokens -> isAdmin = isUserInAdminGroup(token.idToken)
-                else -> {displayMessage("Try restarting application!")}
-            }
+    private fun validPassword(password: String): Boolean {
+        if (password.isEmpty()) {
+            displayMessage("Please enter password")
+            return false
         }
-        return isAdmin
+        return true
+    }
+
+    private fun validUsername(username: String): Boolean {
+        if (username.isEmpty()) {
+            displayMessage("Please enter password")
+            return false
+        }
+
+        if (!username.contains(Regex("@"))) {
+            displayMessage("Email does not contain @ character")
+            return false
+        }
+        return true
     }
 
     private fun isUserInAdminGroup(token: String): Boolean {
