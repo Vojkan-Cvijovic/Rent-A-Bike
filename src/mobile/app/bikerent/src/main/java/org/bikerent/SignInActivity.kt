@@ -92,7 +92,11 @@ class SignInActivity : AppCompatActivity() {
 
     private fun isUserInAdminGroup(token: String): Boolean {
         val jwt = JWT(token)
-        return jwt.getClaim(COGNITO_GROUPS).asArray(String::class.java)[0].equals(COGNITO_ADMIN_GROUP)
+        return try {
+            jwt.getClaim(COGNITO_GROUPS).asArray(String::class.java)[0].equals(COGNITO_ADMIN_GROUP)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun displayMessage(text: String?) {

@@ -10,15 +10,15 @@
 
   <ListView
       android:id="@+id/location_list"
-      android:layout_width="wrap_content"
       android:layout_height="100dp"
+      android:layout_width="match_parent"
       android:choiceMode="singleChoice"
-      android:clickable="true"
       android:divider="@color/black"
       android:dividerHeight="1dp"
-      android:focusable="true"
       android:headerDividersEnabled="true"
-      android:listSelector="#B9BFE3" />
+      android:clickable="true"
+      android:listSelector="#B9BFE3"
+      android:focusable="true" />
 
   <ListView
       android:id="@+id/bike_list"
@@ -60,7 +60,8 @@
       android:id="@+id/message"
       android:gravity="center"
       android:textAlignment="center"
-      android:textSize="30sp"
+      android:layout_marginTop="20dp"
+      android:textSize="15sp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/empty" />

@@ -57,7 +57,7 @@ class ShowLocationsActivity : AppCompatActivity() {
     private fun select() {
         lifecycleScope.launch {
             displayMessage(null)
-            goToShowBikesPage(source = this@ShowLocationsActivity, username, selectedLocation)
+            goToShowBikesPage(source = this@ShowLocationsActivity, username, false, selectedLocation)
         }
     }
 

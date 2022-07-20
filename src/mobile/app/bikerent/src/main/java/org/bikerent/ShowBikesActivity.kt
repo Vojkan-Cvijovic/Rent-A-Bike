@@ -209,7 +209,10 @@ class ShowBikesActivity : AppCompatActivity() {
     }
 }
 
-fun goToShowBikesPage(source: Activity, username: String? = null, location: String) {
+fun goToShowBikesPage(source: Activity, username: String? = null, stopSource: Boolean, location: String) {
+    if (stopSource) {
+        source.finish()
+    }
     val intent = Intent(source, ShowBikesActivity::class.java)
     intent.putExtra(R.string.username.toString(), username)
     intent.putExtra(R.string.location.toString(), location)
