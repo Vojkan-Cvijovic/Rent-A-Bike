@@ -1,0 +1,115 @@
+\begin{thebibliography}{10}
+
+\bibitem{csa}
+Cloud~Security Alliance.
+\newblock {Sensitive Data in the Cloud}, 2022.
+\newblock on-line at:
+  \url{https://cloudsecurityalliance.org/artifacts/sensitive-data-in-the-cloud/}.
+
+\bibitem{aicf}
+AWS.
+\newblock {AWS IoT Core features}, 2022.
+\newblock on-line at: \url{https://aws.amazon.com/iot-platform/how-it-works/}.
+
+\bibitem{ascs}
+AWS.
+\newblock {AWS Serverless Customer Success}, 2022.
+\newblock on-line at: \url{https://aws.amazon.com/serverless/customers/}.
+
+\bibitem{gql}
+The~GraphQL Foundation.
+\newblock {GraphQL}, 2022.
+\newblock on-line at: \url{https://graphql.org/}.
+
+\bibitem{wtfosaais}
+Ken Fromm.
+\newblock {Why the Future of Software and Apps Is Serverless}, 2012.
+\newblock on-line at: \url{https://oreil.ly/vh5ck}.
+
+\bibitem{gswc}
+Hui-Chuan Chloe~Lee Gabriel N.~Schenker, Hideto~Saito and Ke-Jou~Carol Hsu.
+\newblock Getting started with containerization.
+\newblock 2019.
+
+\bibitem{bsa}
+Cagatay Gurturk.
+\newblock Building serverless architectures: Unleash the power of aws lambdas
+  for your applications.
+\newblock 2017.
+
+\bibitem{wis}
+Red Hat.
+\newblock {What is serverless?}, 2022.
+\newblock on-line at:
+  \url{https://www.redhat.com/en/topics/cloud-native-apps/what-is-serverless}.
+
+\bibitem{sah}
+Joseph Ingeno.
+\newblock Software architect’s handbook: Become a successful software
+  architect by implementing effective architecture concepts.
+\newblock 2018.
+
+\bibitem{cc}
+Kris Jamsa.
+\newblock Cloud computing.
+\newblock 2022.
+
+\bibitem{ls}
+Jason Katzer.
+\newblock Learning serverless: Design, develop, and deploy with confidence.
+\newblock 2020.
+
+\bibitem{mac}
+Parminder Kocher.
+\newblock Microservices and containers.
+\newblock 2018.
+
+\bibitem{cdp}
+Source Making.
+\newblock {Command Design Pattern}, 2022.
+\newblock on-line at: \url{https://sourcemaking.com/design_patterns/command}.
+
+\bibitem{ws}
+John~Chapin Mike~Roberts.
+\newblock What is serverless?
+\newblock 2017.
+
+\bibitem{iac}
+Kief Morris.
+\newblock Infrastructure as code.
+\newblock 2020.
+
+\bibitem{bm}
+Sam Newman.
+\newblock Building microservices: Designing fine-grained systems.
+\newblock 2021.
+
+\bibitem{sa}
+Yan~Cui Peter~Sbarski and Ajay Nair.
+\newblock Serverless architectures on aws.
+\newblock 2020.
+
+\bibitem{ve}
+Matthew Portnoy.
+\newblock Virtualization essentials.
+\newblock 2016.
+
+\bibitem{lr}
+Serverless.
+\newblock {Lambda runtimes}, 2022.
+\newblock on-line at:
+  \url{https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html}.
+
+\bibitem{sfs}
+Serverless.
+\newblock {Serverless Framework Services}, 2022.
+\newblock on-line at:
+  \url{https://www.serverless.com/framework/docs/providers/aws/guide/services}.
+
+\bibitem{baasp}
+Kelsey Taylor.
+\newblock {Top 14 Backend-as-a-Service Providers}, 2022.
+\newblock on-line at:
+  \url{https://www.hitechnectar.com/blogs/top-14-backend-as-a-service-providers/}.
+
+\end{thebibliography}

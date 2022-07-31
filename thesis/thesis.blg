@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+The style file: plain.bst
+Database file #1: thesis.bib
+Warning--empty booktitle in gswc
+Warning--empty booktitle in bsa
+Warning--empty booktitle in sah
+Warning--empty booktitle in cc
+Warning--empty booktitle in ls
+Warning--empty booktitle in mac
+Warning--empty booktitle in ws
+Warning--empty booktitle in iac
+Warning--empty booktitle in bm
+Warning--empty booktitle in sa
+Warning--empty booktitle in ve
+You've used 21 entries,
+            2118 wiz_defined-function locations,
+            582 strings with 6028 characters,
+and the built_in function-call counts, 4662 in all, are:
+= -- 405
+> -- 159
+< -- 0
++ -- 67
+- -- 46
+* -- 158
+:= -- 781
+add.period$ -- 63
+call.type$ -- 21
+change.case$ -- 86
+chr.to.int$ -- 0
+cite$ -- 32
+duplicate$ -- 213
+empty$ -- 507
+format.name$ -- 46
+if$ -- 1004
+int.to.chr$ -- 0
+int.to.str$ -- 21
+missing$ -- 11
+newline$ -- 108
+num.names$ -- 42
+pop$ -- 191
+preamble$ -- 1
+purify$ -- 65
+quote$ -- 0
+skip$ -- 148
+stack$ -- 0
+substring$ -- 105
+swap$ -- 21
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 84
+warning$ -- 11
+while$ -- 42
+width$ -- 23
+write$ -- 201
+(There were 11 warnings)
