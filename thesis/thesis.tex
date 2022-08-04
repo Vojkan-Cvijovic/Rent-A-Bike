@@ -31,6 +31,8 @@
     tabsize=2
 }
 
+\lstset{style=mystyle}
+
 % \usepackage[biblatex]{matfmaster}
 % \bib{thesis}
 
@@ -85,18 +87,18 @@ U ovom radu će biti predstavljen razvoj skalabilnog veb servisa zasnovanih na a
 % ------------------------------------------------------------------------------
 
 \section{Motivacija}
-Popularnost računarstva u oblaku raste iz godine u godinu. Računarstvo u oblaku oslobađa klijenta potrebe da poseduje hardver i pruža mogućnost iznamljivanja servera o čijem hardveru i dostupnosti se stara pružalac usluge (engl. cloud provider). Ranije su kompanije morale da kupe ili zakupe odredjeni server sa pratećim hardverom. U slucaju kupovine morali su i da obezbede adekvatno mesto da takve uređaje. U slucaju da im obim posla poraste, nije postojalo lak način da prosire svoje kapacitete. Ovaj način upravljanja je zahtevao i angažovanje dodatnog osoblja koje bi radilo na održavanju takvih uređaja. U slučaju iznamljivanja servera zahteva se određeni nivo upravljanja operativnim sistemom i ostalim softverom na sistemu. Korisnik koji iznamljuje mora da se stara o održavanju samog sistema, ažuriranju verzija kako paketa tako i samog operativnog sistema. Ovaj scenario se pokazao kao otežavajuci faktor na projektima, pogotovu u kompanijama koje nemaju dovoljno ljudskih resursa i znanja iz domena održavanja. Dodatni otežavajuci faktor je nemogućnost prilagođavanja promenama zahteva opterećenosti samog servera. 
+Popularnost računarstva u oblaku raste iz godine u godinu. Računarstvo u oblaku oslobađa klijenta potrebe da poseduje hardver i pruža mogućnost iznamljivanja servera o čijem hardveru i dostupnosti se stara pružalac usluge (engl. cloud provider). Ranije su kompanije morale da kupe ili zakupe određeni server sa pratećim hardverom. U slucaju kupovine morali su i da obezbede adekvatno mesto da takve uređaje. U slucaju da im obim posla poraste, nije postojalo lak način da prosire svoje kapacitete. Ovaj način upravljanja je zahtevao i angažovanje dodatnog osoblja koje bi radilo na održavanju takvih uređaja. U slučaju iznamljivanja servera zahteva se određeni nivo upravljanja operativnim sistemom i ostalim softverom na sistemu. Korisnik koji iznajmljuje mora da se stara o održavanju samog sistema, ažuriranju verzija kako paketa tako i samog operativnog sistema. Ovaj scenario se pokazao kao otežavajuci faktor na projektima, pogotovu u kompanijama koje nemaju dovoljno ljudskih resursa i znanja iz domena održavanja. Dodatni otežavajuci faktor je nemogućnost prilagođavanja promenama zahteva opterećenosti samog servera. 
 
-Sa arhitekturom bez servera (engl. serverless architecture) klijent ne poseduje konkretne fizičke resurse već po potrebi koristi deo resursa u skladu sa svojim potrebama. Klijent se na taj način fokusira isključivo na ciljanu aplikaciju. Pružalac usluge se stara o okruženju, o hardveru, operativnom sistemu virtuelnih mašina i upravljanju drugim serverskim softverom. Kôd se obično pokreće unutar kontejnera bez stanja (engl. stateless container) koji može biti aktiviran raznim događajima uključujući HTTP zahteve, postavljanje datoteke na server, događaje iz baze podataka, itd.
+Sa arhitekturom bez servera (engl. serverless architecture) klijent ne poseduje konkretne fizičke resurse već po potrebi koristi deo resursa u skladu sa svojim potrebama. Klijent se na taj način fokusira isključivo na ciljanu aplikaciju. Pružalac usluge se stara o okruženju, o hardveru, operativnom sistemu virtuelnih mašina i upravljanju drugim serverskim softverom. Kôd se obično pokreće unutar kontejnera koji ne čuvaju stanja (engl. stateless container) i koji može biti aktiviran raznim događajima uključujući HTTP zahteve, postavljanje datoteke na server, događaje iz baze podataka, itd.
 
 
 % ------------------------------------------------------------------------------
 
 
 \section{Virtuelizacija}
-Virtuelizacija se odnosi na abstrakciju neke fizičke kompotente u logičku komponentu. Virtuelizacija je kljucna za funkcionisanje računarstva u oblaku. Ona omogućava provajderima da svojim klijentima brzo omoguće izolovan servis. Po definiciji virtuelna mašina može da virtuelizuje sve hardverske komponente, ukljucujući procesor, memorijski prostor i mrežnu organizaciju\cite{ve}. Monitor virtuelne mašine je softver koji spaja virtuelnu mašinu i server na kome se nalazi virtuelna mašina. Jos je poznat i kao hipervizor. Računar na kojem hipervizor pokreće jednu ili više virtuelnih mašina naziva se domaćin (engl. host) mašina, a svaka virtualna mašina se naziva gostujuća (engl. guest) mašina. Hipervizor dolazi u dva oblika. Kao sloj između serverskom operativnog sistema i gostujuće virtuelne mašine ili virtuelne mašine i samog hardvera\cite{ve}. Poslednji koriste operativni sistemi poput Vindovsa (engl. Windows) i Linuksa (engl. Linux). Razlikujemo dve vrste virtuelizacije, virtuelizaciju zasnovanu na hipervizoru i virtuelizaciju zasnovanu na kontejnerima.
+Virtuelizacija se odnosi na apstrakciju neke fizičke kompotente u logičku komponentu. Virtuelizacija je ključna za funkcionisanje računarstva u oblaku. Ona omogućava provajderima da svojim klijentima brzo omoguće izolovan servis. Po definiciji virtuelna mašina može da virtuelizuje sve hardverske komponente, ukljucujući procesor, memorijski prostor i mrežnu organizaciju\cite{ve}. Monitor virtuelne mašine je softver koji spaja virtuelnu mašinu i server na kome se nalazi virtuelna mašina. Jos je poznat i kao hipervizor. Računar na kojem hipervizor pokreće jednu ili više virtuelnih mašina naziva se domaćin (engl. host) mašina, a svaka virtualna mašina se naziva gostujuća (engl. guest) mašina. Hipervizor dolazi u dva oblika. Kao sloj između serverskom operativnog sistema i gostujuće virtuelne mašine ili virtuelne mašine i samog hardvera\cite{ve}. Poslednji koriste operativni sistemi poput Vindovsa (engl. Windows) i Linuksa (engl. Linux). Razlikujemo dve vrste virtuelizacije, virtuelizaciju zasnovanu na hipervizoru i virtuelizaciju zasnovanu na kontejnerima.
  
-Velike kompanije poput Gugla(engl. Google), Amazona (engl. Amazon) imaju svoje centre podataka u kojima su smesteni serveri velike snage. Kako je prateći Murov zakon (engl. Moor's Law) hardverska snaga rasla tako je model jedan server, jedna aplikacija zastarevao. Takvi serveri su imali slabu iskorišćenost. Virtuelizacija omogućava bolju iskorišćenost servera. Ideja virtuelizacije nije nova. Još su se u šezdesetim IBM koristili mejnfrejm (engl. mainframe) računari sa virtuelnim okruženjima. Virtuelizacija je omogućila grupisanje vise fizičkih mašina u manji broj servera koji bi dalje pokretali veći broj virtuelnih mašina i samim tim podigli iskorišćenost servera. Što je bolja iskorišćenost servera to je manji broj servera potreban u sali a samim tim i manji su troskovi za njihovo održavanje, manje zaposlenih mora da ih održava, manje energije se utroši na hlađenje. Pored mogućnosti grupisanja (engl. consolidation), virtuelizaija je omogućila i mogućnost zadržavanja (engl. containment) aplikacija na postojećoj virtuelnoj infrastrukturi. To je kompanijama omogućilo lak prenos virtuelnih mašina sa jednog hardvera na drugi. Administratori mogu da zaustave virtuelni mašinu u svakom trenutku i da je lako oporave na prethodno ispravno stanje. Računarstvo u oblaku bi bilo nemoguće bez virtuelizacije kako ona omogućava da se veliki centri podataka transformišu u skalabilne i lako dostupne resurse. Virtuelizacija omogućava transformaciju centara u virtuelne centre podataka što dalje olakšava dostavljanje resursa klijentu. Virtuelni centri podataka se dalje organizuju po virtuelnim regionima\cite{ve}.
+Velike kompanije poput Gugla(engl. Google), Amazona (engl. Amazon) imaju svoje centre podataka u kojima su smesteni serveri velike snage. Kako je prateći Murov zakon (engl. Moor's Law) hardverska snaga rasla tako je model jedan server, jedna aplikacija zastarevao. Takvi serveri su imali slabu iskorišćenost. Virtuelizacija omogućava bolju iskorišćenost servera. Ideja virtuelizacije nije nova. Još su se u šezdesetim IBM koristili mejnfrejm (engl. mainframe) računari sa virtuelnim okruženjima. Virtuelizacija je omogućila grupisanje vise fizičkih mašina u manji broj servera koji bi dalje pokretali veći broj virtuelnih mašina i samim tim podigli iskorišćenost servera. Što je bolja iskorišćenost servera to je manji broj servera potreban u sali a samim tim i manji su troskovi za njihovo održavanje, manje zaposlenih mora da ih održava, manje energije se utroši na njihovo hlađenje. Pored mogućnosti grupisanja (engl. consolidation), virtuelizaija je omogućila i mogućnost zadržavanja (engl. containment) aplikacija na postojećoj virtuelnoj infrastrukturi. To je kompanijama omogućilo lak prenos virtuelnih mašina sa jednog hardvera na drugi. Administratori mogu da zaustave virtuelni mašinu u svakom trenutku i da je lako oporave na prethodno ispravno stanje. Računarstvo u oblaku bi bilo nemoguće bez virtuelizacije kako ona omogućava da se veliki centri podataka transformišu u skalabilne i lako dostupne resurse. Virtuelizacija omogućava transformaciju centara u virtuelne centre podataka što dalje olakšava dostavljanje resursa klijentu. Virtuelni centri podataka se dalje organizuju po virtuelnim regionima\cite{ve}.
 
 \subsection{Virtuelizacija zasnovana na hipervizorima}
 Hipervizor se moze posmatrati kao arbitar resursa. To je softver koji se nalazi između virtuelne mašine i samog fizičkog hardvera kao što se može videti na slici\footnote{Slika je preuzeta iz knjige Virtualization Essentials}\ref{fig:hipervizor}. Omogućava virtuelnoj mašini da upravlja sa memoriom, da pristupa virtuelnim mrežama za komunikaciju, efikasno korišćenje sve veće memorije kod novijih procesora\cite{ve}. Bez hipervizora svaka virtuelna mašina bi morala direktno da pristupa disku što bi napravilo problem ako bi jos jedna mašina izvrsavala paralelno operaciju pristupa disku. Hipervozor se stara da svaka virtuelna mašina moze da koristi hardver bez obzira na ostale virtuelne mašine.
@@ -107,7 +109,7 @@ Hipervizor se moze posmatrati kao arbitar resursa. To je softver koji se nalazi 
   \label{fig:hipervizor}
 \end{figure}
  
-Postoje dva tipa hipervizora a to su tip 1 i tip 2. U nastavku razmatramo njihove karakteristike.
+Postoje dva tipa hipervizora a to su tip 1 i tip 2. U nastavku rada razmatramo njihove karakteristike.
  
 \subsubsection{Tip 1 hipervizor}
 Kao što se može videti na slici\footnote{Slika je preuzeta iz knjige Virtualization Essentials}\ref{fig:hipervizorTip1}, ovaj tip hipervizora se nalazi se direktno na serverskom hardveru bez operativnog sistema ispod. Direktno komunicira sa hardverom što ga čini mnogo efikasnijim od tipa 2. Ne postoji trošak održavanja operativnog sistema koji bi služio kao posrednik. Pored boljih performansi tip 1 hipervizori su bezbedniji. Virtuelne mašine koje se izvrsavaju iznad hipervizora, ne mogu da utiču na hipervizor. One su ograđene u svoj prostor i mogu da izazovu pad samo sopstvene virtuelne mašine. Ostale virtuelne mašine ostaju neometene.
@@ -132,7 +134,7 @@ Ovaj tip hipervizora je takođe manje pouzdan od tipa 1. Kako imamo operativni s
  
 \subsection{Virtuelizacija zasnovana na kontejnerima}
 
-Virtuelizacija zasnovana na kontejnerima se izvršava na nivou operativnog sistema deleći sa njim sistemski kernel. Za razliku od virtuelizacije zasnovane na hipervizoru koja virtuelizuje ceo hardver, virtuelizacija zasnovana na kontejnerima zahteva mnogo manje virtuelizacije. Samim tim sto ne zahteva podizanje celog operativnog sistema prilikom startovanja kontejnera, vreme startovanja je krace\cite{gswc}. 
+Virtuelizacija zasnovana na kontejnerima se izvršava na nivou operativnog sistema deleći sa njim sistemski kernel. Za razliku od virtuelizacije zasnovane na hipervizoru koja virtuelizuje ceo hardver, virtuelizacija zasnovana na kontejnerima zahteva mnogo manje virtuelizacije. Samim tim sto ne zahteva podizanje celog operativnog sistema prilikom startovanja kontejnera, vreme startovanja je kraće\cite{gswc}. 
  
 \begin{figure}[!ht]
   \centering
@@ -152,7 +154,7 @@ Kontejneri su lakši za izvršavanje kako im ne treba ceo operativni sistem ali 
 
 \section{Računarstvo u oblaku}
 
-Računarstvo u oblaku je koristi da bi se opisao skup računara, servisa i resursa koje programeri mogu da koriste prilikom razvoja sistema zasnovanih na vebu. Primeri takvih resursa mogu biti računarski, skladišni prostor, mrežni, aplikativni. Ti resursi se posmatraju kao virtuelni iz razloga ukoliko je potrebno prosiriti broj resursa, pružaoci usluga to lako omogućavaju. Klijenti plaćaju samo resurse koje koriste, a na kompanijama koje pružaju usluge iznamljivanja je da se staraju o dostupnosti tih servisa, resursa i o održavanju centara gde se nalaze serverske mašine. Na klijentu ostaje da se fokusira na svoje i potrebe aplikacije\cite{cc}.
+Računarstvo u oblaku je koristi da bi se opisao skup računara, servisa i resursa koje programeri mogu da koriste prilikom razvoja sistema zasnovanih na vebu. Primeri takvih resursa mogu biti računarski, skladišni prostor, mrežni, aplikativni. Ti resursi se posmatraju kao virtuelni iz razloga ukoliko je potrebno proširiti broj resursa, pružaoci usluga to lako omogućavaju. Klijenti plaćaju samo resurse koje koriste, a na kompanijama koje pružaju usluge iznamljivanja je da se staraju o dostupnosti tih servisa, resursa i o održavanju centara gde se nalaze serverske mašine. Na klijentu ostaje da se fokusira na svoje i potrebe aplikacije\cite{cc}.
 
 %% Nabrajanje?! Formulisati drugacije?
 Karakteristike računarstva u oblaku:
@@ -164,7 +166,7 @@ Karakteristike računarstva u oblaku:
   \item Izmerena usluga (engl. Measured service). Upotreba resursa se može pratiti, proveravati i o njoj se mogu praviti izveštaji pružajući transparentan uvid o uslugama i korisnicima. Klijent plaća računarske resurse koje je koristio.
 \end{enumerate}
 
-Kao sto se vidi na slici\footnote{Slika je preuzeta sa sajta https://dev.to}\ref{fig:servisniModeli}, u zavisnosti koliko je kontrole infrastrukture dato klijentu, razlikujemo 3 servisna modela računarstva u oblaku. U nastvaku razmatramo njihove prednosti i mane.
+Kao sto se vidi na slici\footnote{Slika je preuzeta sa sajta https://dev.to}\ref{fig:servisniModeli}, u zavisnosti od nivoa kontrole infrastrukture koje je dato klijentu, razlikujemo 3 servisna modela računarstva u oblaku. U nastvaku razmatramo njihove prednosti i mane.
 
 \begin{figure}[!ht]
   \centering
@@ -175,7 +177,7 @@ Kao sto se vidi na slici\footnote{Slika je preuzeta sa sajta https://dev.to}\ref
  
 \subsection{Infrastruktura kao servis}
 
-U ovom modelu sva kontrola računarskog hardvera je data na raspolaganje klijentu. Pružalac usluga se stara u hardveru i pratećoj infrastrukturi dok je klijentu predata potpuna kontrola nad operativnim sistemom i njegovim komponentama. Klijent mora sam da se stara o održavanju sistema, ažuriranju softvera, praćenju opterećenosti računarskih resursa poput procesora i memorije. Klijentu je prepusteno da se sam stara o pravljenju sigurnosnih kopija same mašine za slučaj otkazivanja neke komponente. Ovaj model može biti izazovan za manje firme koje ne mogu da priušte tim zaposlenih koji će se baviti održavanjem virtuelnih mašina. Model je predviđen za velike kompanije koje žele punu kontrolu nad svojim resursima a opet ne žele da ih drže u svojim centrima\cite{cc}. Komercijalni primeri modela infrstruktura kao servis su Amazon Elastic Compute Cloud, Google Compute Engine i Azure Virtual Machines. %-> Kako ovo navesti? 
+U ovom modelu sva kontrola računarskog hardvera je data na raspolaganje klijentu. Pružalac usluga se stara u hardveru i pratećoj infrastrukturi dok je klijentu predata potpuna kontrola nad operativnim sistemom i njegovim komponentama. Klijent mora sam da se stara o održavanju sistema, ažuriranju softvera, praćenju opterećenosti računarskih resursa poput procesora i memorije. Klijentu je prepusteno da se sam stara o pravljenju sigurnosnih kopija same mašine za slučaj otkazivanja neke komponente. Ovaj model može biti izazovan za manje firme koje ne mogu da priušte tim zaposlenih koji će se baviti održavanjem virtuelnih mašina. Model je predviđen za velike kompanije koje žele punu kontrolu nad svojim resursima a opet ne žele da ih drže u svojim centrima podataka\cite{cc}. Komercijalni primeri modela infrstruktura kao servis su Amazon Elastic Compute Cloud, Google Compute Engine i Azure Virtual Machines. %-> Kako ovo navesti? 
 
  
 \subsection{Platforma kao servis}
@@ -183,12 +185,12 @@ U ovom modelu klijentu nije omogućeno upravljanje infrastrukturom ukljucujući 
 
 
 \subsection{Softver kao servis}
-U ovom modelu klijentu se daje na raspolaganje pristup softveru uglavnom preko veb pregledača. Sam softver, dodatni alati i korisnički podaci se nalaze u oblaku (engl. cloud). Zato sto se svi resursi nalaze kod pružaoca usluga, celo rešenje može lako da se skalira. Pružalac usluga se stara i o samom hardveru i operativnom sistemu. Plaćanje se uglavnom vrši prema broju korisnika aplikacija. Korisnik moze da podesi aplikaciju kroz konfiguracije koje mu je omogućio pružalac usluga. Aplikacije se mogu koristiti i bez prethodnog konfigurisanja, kao npr aplikacije za dopisivanje, dok neke aplikacije zahtevaju konfigurisanje sa korisničke strane pre nego sto se mogu koristiti. Neki primeri komercijalnih rešenja su Slack, ServiceNow, Jira, OneDrive. %-> Kako ovo navesti? 
+U ovom modelu klijentu se daje na raspolaganje pristup softveru uglavnom preko veb pregledača. Sam softver, dodatni alati i korisnički podaci se nalaze u oblaku (engl. cloud). Zato sto se svi resursi nalaze kod pružaoca usluga, celo rešenje se može lako skalirati. Pružalac usluga se stara i o samom hardveru i operativnom sistemu. Plaćanje se uglavnom vrši prema broju korisnika aplikacija. Korisnik moze da podesi aplikaciju kroz konfiguracije koje mu je omogućio pružalac usluga. Aplikacije se mogu koristiti i bez prethodnog konfigurisanja, kao npr aplikacije za dopisivanje, dok neke aplikacije zahtevaju konfigurisanje sa korisničke strane pre nego sto se mogu koristiti. Neki primeri komercijalnih rešenja su Slack, ServiceNow, Jira, OneDrive. %-> Kako ovo navesti? 
 
 
 \subsection{Tipovi računarstva u oblaku} % ->(engl. Cloud deployment model -> kako prevesti)
  
-Postoje tri tipa računarstva u oblaku. U zavisnosti od potreba, korisnik se može opredeliti za javni, privatni ili hibridni tip računarstva u oblaku.
+Postoje tri tipa računarstva u oblaku. U zavisnosti od potreba, korisnik se može opredeliti za javni, privatni ili hibridni tip računarstva u oblaku. U nastavku rada razmatramo njihove karakteristike.
 
 
 \subsubsection{Javni oblak} % treba li mi subsubsection?
@@ -198,7 +200,7 @@ Javni oblak je u vlasništvu pružalaca usluga i dostupan je svima preko interne
 
  
 \subsubsection{Privatni oblak}
-Privatni oblak je napravljen isključivo za upotrebu jednog klijenta. Rezervisan centar podataka za tog klijenta, koji može biti unutar organizacije ili hostovan od strane pružaoca usluga. Pruža veći nivo kontrole pristupa za razliku od javnog oblaka. Iako košta vise od javnog oblaka, velike firme ga koriste da bi podigle nivo bezbednosti i oblikovale računarske resurse u skladu sa njihovim potrebama. Prema izveštaju CSA od 89\% organizacija koje čuvaju osetljive podatke u oblaku, 45\% njih čuva podatke na privatnom oblaku\cite{csa}.
+Privatni oblak je napravljen isključivo za upotrebu jednog klijenta. Rezervisan centar podataka za tog klijenta, koji može biti unutar organizacije ili iznajmljen od pružaoca usluga. Pruža veći nivo kontrole pristupa za razliku od javnog oblaka. Iako košta vise od javnog oblaka, velike firme ga koriste da bi podigle nivo bezbednosti i oblikovale računarske resurse u skladu sa njihovim potrebama. Prema izveštaju CSA od 89\% organizacija koje čuvaju osetljive podatke u oblaku, 45\% njih čuva podatke na privatnom oblaku\cite{csa}.
 % hostovan? Formulisati drugacije?
  
 \subsubsection{Hibridni oblak}
@@ -206,7 +208,7 @@ Predstavlja spoj javnog i privatnog oblaka. Sastavljeni su od dva ili više obla
 
 
 \section{Projektni uzorci softverske arhitekture}
-Arhitektura bez servera omogućava skaliranje pojedinačnih funkcija što može uticati na opštu arhitekturu softvera. Da bi smo u potpunosti iskoristili bonuse arhitekture bez servera, arhitektura softvera mora biti adekvatna. U arhitekturi bez servera svaka funkcija ili svaki servis moraju biti lagani (engl. lightweight) i agilni. Fukcije se skaliraju pa je obavezno da imaju kratko vreme startovanja. U ovom poglavnju prolazimo kroz karakteristike monolitne i mikroservisne arhitekture. Na slici\footnote{Slika je preuzeta sa sajta https://www.suse.com}\ref{fig:arhitekturniProjektniUzorci} se može videti razlika između monolitne i mikroservisne arhitekture na primeru veb (engl. web) aplikacije.
+Arhitektura bez servera omogućava skaliranje pojedinačnih komponenti što može uticati na opštu arhitekturu softvera. Da bi smo u potpunosti iskoristili bonuse arhitekture bez servera, arhitektura softvera mora biti adekvatna. U arhitekturi bez servera svaka komponenta, funkcija ili svaki servis moraju biti lagani (engl. lightweight) i agilni. Fukcije se skaliraju pa je obavezno da imaju kratko vreme startovanja. U ovom poglavnju prolazimo kroz karakteristike monolitne i mikroservisne arhitekture. Na slici\footnote{Slika je preuzeta sa sajta https://www.suse.com}\ref{fig:arhitekturniProjektniUzorci} se može videti razlika između monolitne i mikroservisne arhitekture na primeru veb (engl. web) aplikacije.
 %Slika je preuzeta sa sajta https://www.suse.com/c/rancher_blog/microservices-vs-monolithic-architectures, pada build kada navedem sve?
 % lightweight, lagani ili?
 
@@ -222,11 +224,11 @@ Monolitna arhitektura predstavlja tradicionalni model izrade softvera. Softver s
 %(Building Microservices, 2nd Edition, What Are Microservices?, The Monolith)
 \begin{enumerate}
   \item Monolit sadržan od jednog procesa(engl. Single-Process Monolith). Ceo kod se izvršava u jednom procesu. Mozemo imati i više instanci ali suštinski ceo kod se nalazi u jednom procesu. 
-  \item Modularni monolit: Predstavlja proširenje monolita zasnovanog na jednom procesu. Sastoji se od vise logički odvojenih modula koji ne mogu da funkcionišu samostalno van grupe modula. Čest problem kod modularnih monolita je to što podaci u bazi nisu dekomponovani kao sto što je kod podeljen u odvojene module.
-  \item Distribuirani monolit: Sistem koji se sastoji od više međusobno usko povezanih servisa. Svim servisima mora u isto vreme da se odradi isporučivanje koda(engl. deployment). Ovakvi sistemi imaju sve mane distriburanih sistema i jedno procesnih monolita bez i jedne prednosti pomenutih. 
+  \item Modularni monolit. Predstavlja proširenje monolita zasnovanog na jednom procesu. Sastoji se od vise logički odvojenih modula koji ne mogu da funkcionišu samostalno van grupe modula. Čest problem kod modularnih monolita je to što podaci u bazi nisu dekomponovani kao sto što je kod podeljen u odvojene module.
+  \item Distribuirani monolit. Sistem koji se sastoji od više međusobno usko povezanih servisa. Svim servisima mora u isto vreme da se odradi isporučivanje koda(engl. deployment). Ovakvi sistemi imaju sve mane distriburanih sistema i jedno procesnih monolita bez i jedne prednosti pomenutih.
 \end{enumerate}
  
-Monolitna arhitektura ima svoje prednosti. Lako isporučivanje koda (engl. deployment), kod se isporučuje kao jedna celina čime se ceo proces značajno uprošćava. Performanse sistema, ceo kod se izvrsava kao deo jedne celine pa nema potrebe za pravljenjem HTTP (engl. The Hypertext Transfer Protocol) poziva unutar same aplikacije. Time se ubrzava ceo proces pošto HTTP zahtevi mogu da se prekinu pa je ih potrebno ograditi sa mehanizmom za ponavljanje. Lakse debagovanje (engl. debugging) i nalaženje bagova. Olakšano je testiranje celog sistema za razliku od distribuiranih sistema. Prednosti monolitne arhitekture najviše dolaze do izražaja kod manjih aplikacija\cite{bm}.
+Monolitna arhitektura ima svoje prednosti. Lako isporučivanje koda (engl. deployment) kako se kod isporučuje kao jedna celina čime se ceo proces značajno uprošćava. Performanse sistema, ceo kod se izvrsava kao deo jedne celine pa nema potrebe za pravljenjem HTTP (engl. The Hypertext Transfer Protocol) poziva unutar same aplikacije. Time se ubrzava ceo proces pošto HTTP zahtevi mogu da se prekinu pa je ih potrebno ograditi sa mehanizmom za ponavljanje. Lakse debagovanje (engl. debugging) i nalaženje bagova. Olakšano je testiranje celog sistema za razliku od distribuiranih sistema. Prednosti monolitne arhitekture najviše dolaze do izražaja kod manjih aplikacija\cite{bm}.
  
 Monolitna arhitektura ima i svoje mane. Ne mogu da se skaliraju pojedinačne komponente sistema u slučaju modularnog monolita. Ukoliko je jedna komponenta opterećenija od ostalih, ne može se samo ona klonirati već mora ceo monolit. Komponente monolitne aplikacije su usko povezane (eng tightly coupled) tako da problem u jednoj komponenti može dovesti do pada druge komponente. Naročito je problematično za velike timove koji razvijaju istu monolitnu aplikaciju paralelno, promene koje je uveo jedan tim mogu da dovedu do greške na funkcionalnostima koje je radio drugi tim. Sužen izbor tehnologija, sve komponente monolitne ahritekture moraju biti napisane koristeći isti kod. Migracija na novije tehnologije može biti izazovna kako zahteva promenu u celom projektu. Održavanje može biti otežano. Velike monolitne aplikacije su komplikovane za održavanje i mogu da smanje produktivnost na projektu. Male promene u kodu zahtevaju isporučivanje cele aplikacije. Monolitna arhitektura može biti dobar izbor u odrđenim trenucima ipak za aplikacije zasnovane na arhitekturi bez servera (engl. serverless) nije najbolji izbor posto one ostvaruju najvise benefita ukoliko je aplikacija organizovana u vise manjih odvojenih servisa\cite{sa}.
 %(Serverless Architectures on AWS, Second Edition,  Going Serverless, Understanding serverless architectures)
@@ -258,7 +260,7 @@ Postoje dva bezserverska modela računarstva u oblaku (engl. Serverless cloud co
 Bekend kao usluga se odnosi na third-party (engl. third-party) usluge koje su dostupne preko aplikativnog interfejsa (engl. Application Programming Interface) i koriste se da bi upotpunili ili zamenili neke funkcionalnosti u aplikaciji. Na primer pružalac usluga može omogućiti servis za autentifikaciju, mehanizam dodatne enkripcije ili pristup bazama podataka u oblaku. Ovi servisi se uglavnom koriste kod jednostavnijih veb aplikacije ili mobilnih aplikacija za autentifikaciju\cite{wis}\cite{bsa}. Neki od komarcijalnih primera su AWS Amplify i Firebase\cite{baasp}.
 
 \subsection{Funkcija kao usluga}
-Funkcija kao usluga omogućava da se kod isporuči pružaocu usluga a dalje pružalac usluga se stara da se taj kod izvršava kao deo funkcije. Ove funkcije se pokreću na odredjeni dolazni događaj koji je zadat kada je i napravljena funkcija. Događaji mogu biti HTTP (engl. HyperText Transfer Protocol) pozivi, poruke, događaj koji se napravi kada se na primer fajl okači na S3, upis u bazu. Na primer, korisnik može da konfiguriše funkciju da kada se okači slika na S3 servis, funkcija se aktivira i promeni format slike u adekvatni format. Pružalac usluga vodi računa o skaliranju infrastrukture pa korisniku deluje kao da server ni ne postoji. 
+Funkcija kao usluga omogućava da se kod isporuči pružaocu usluga a dalje pružalac usluga se stara da se taj kod izvršava kao deo funkcije. Ove funkcije se pokreću na određeni dolazni događaj koji je zadat kada je i napravljena funkcija. Događaji mogu biti HTTP (engl. HyperText Transfer Protocol) pozivi, poruke, događaj koji se napravi kada se na primer fajl okači na S3, upis u bazu. Na primer, korisnik može da konfiguriše funkciju da kada se okači slika na S3 servis, funkcija se aktivira i promeni format slike u adekvatni format. Pružalac usluga vodi računa o skaliranju infrastrukture pa korisniku deluje kao da server ni ne postoji. 
 
 Funkcije se izvršavaju u kontejnerima koji ne čuvaju stanje i koji su aktivni koliko je aktivna i sama funkcija. Kontejneri ne čuvaju stanje između izvršavanja funkcija pa se sve promene moraju čuvati na nekom drugom servisu, npr u bazi podataka. Pružalac usluga odrđuje koliko dugo kontejneri rade nakon sto se izvršavanje funkcije završi. Klijentu je omogućeno da prosledi i konfiguracioni fajl prilikom isporučivanja koda funkcija. Klijent može da odredi na koje događaje će koje funkcije da se pokreću ili da postavi promenljive po okruženjima (engl. environment variables). Funkcija ostaje na raspolaganju sve dok se ne ukloni sa pružaoca usluga\cite{bsa}.
 
@@ -340,7 +342,7 @@ Jedno od popularnih rešenja za primenu računarstva bez servera su bot servisi.
 
 \subsection{Hibridna rešenja}
 
-Hibridna rešenja predstavljaju kombinaciju nekog od predloženih rešenja i postojećeg sistema. Postojeći sistem se prosiruje da sadrži komponente koje su razvijene arhitekturom bez servera i kao takve upotpunjuju funkcionalnosti postojećeg sistema. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:HibridnoResenje} možemo videti jedan primer takvog hibridnog rešenja koje je prošireno sa Lambda funkcijama koje obavljaju neke poslove koji nisu bili deo sistema.
+Hibridna rešenja predstavljaju kombinaciju nekog od predloženih rešenja i postojećeg sistema. Postojeći sistem se proširuje da sadrži komponente koje su razvijene arhitekturom bez servera i kao takve upotpunjuju funkcionalnosti postojećeg sistema. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:HibridnoResenje} možemo videti jedan primer takvog hibridnog rešenja koje je prošireno sa Lambda funkcijama koje obavljaju neke poslove koji nisu bili deo sistema.
 
 \begin{figure}[!ht]
   \centering
@@ -351,11 +353,11 @@ Hibridna rešenja predstavljaju kombinaciju nekog od predloženih rešenja i pos
 
 \section{Projektni uzorci}
 
-Projektni uzorci (engl. patterns) predstavljaju rešenja za neke česte problema u dizajnu softvera. Oni takođe olakšavaju komunikaciju između razvijalaca (engl. developers) softvera koji rade na istom rešenju. Ukoliko su svi upoznati sa projektnim uzorkom, njegovim prednostima i manama, lakše se nađe odgovor na problem. Uzorci predstavljeni u ovom delu su incijalno bili korišćeni za distribuirane sisteme. Kasnije sa razvojem arhitekture bez servera ovi uzorci su postali korisni za rešavanje problema prilikom dizajniranja arhitekture bez servera\cite{sa}. U nastavnku razmatramo neke od popularnih projektnih uzoraka za računarstvo bez servera.
+Projektni uzorci (engl. patterns) predstavljaju rešenja za neke česte problema u dizajnu softvera. Oni takođe olakšavaju komunikaciju između razvijalaca (engl. developers) softvera ukoliko su svi upoznati sa projektnim uzorkom, njegovim prednostima i manama. Uzorci predstavljeni u ovom delu su incijalno bili korišćeni za distribuirane sisteme. Kasnije sa razvojem arhitekture bez servera ovi uzorci su postali korisni za rešavanje problema prilikom dizajniranja softvera arhitekture bez servera\cite{sa}. U nastavnku razmatramo neke od popularnih projektnih uzoraka za računarstvo bez servera.
 
 \subsection{GrafQL}
 
-GrafQL (engl. GraphQL) je jezik za pretragu podataka koji je razvio Fejsbuk (engl. Facebook) 2012. godine i koji je zvanično objavljen 2015. godine\cite{gql}. Razvijen je kao alternativa popularnom REST (engl. Representational State Transfer) protokolu. GrafQL pokušava da reši problem koji REST ima sa potrebom višestrukog dohvatanja podataka i problema sa verzionisanjem. Struktura odgovora servera nije zadata na serveru kao što je primer kod REST protokola. Ona se ostavlja na raspolaganju klijentu koji može da zada sta želi od podataka da mu se prosledi. Klijent koristi jednu putanju u zahtevu a u telu zahteva zadaje kakvu strukturu i kakve podatke očekuje. GrafQL sakuplja podatke sa više mesta i vraća objedinjen odgovor klijentu. Time se postiže veća efikasnost u odnosu na REST protokol. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:graphql} može da se vidi primer implementacije GrafQL jezika i AWS Lambda servisa. GrafQl biblioteka može da se izvršava u okviru Lambda funkcije. 
+GrafQL (engl. GraphQL) je jezik za pretragu podataka koji je razvio Fejsbuk (engl. Facebook) 2012. godine i koji je zvanično objavljen 2015. godine\cite{gql}. Razvijen je kao alternativa popularnom REST (engl. Representational State Transfer) protokolu. GrafQL pokušava da reši probleme koji REST ima sa potrebom višestrukog dohvatanja podataka i verzionisanja. Struktura odgovora servera nije zadata na serveru kao što je primer kod REST protokola. Ona se ostavlja na raspolaganju klijentu koji može da zada sta želi od podataka da mu se prosledi. Klijent koristi jednu putanju u zahtevu a u telu zahteva zadaje kakvu strukturu i kakve podatke očekuje. GrafQL sakuplja podatke sa više mesta i vraća objedinjen odgovor klijentu. Time se postiže veća efikasnost u odnosu na REST protokol. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:graphql} može da se vidi primer implementacije GrafQL jezika i AWS Lambda servisa. GrafQl biblioteka može da se izvršava u okviru AWS Lambda funkcije. 
 
 \begin{figure}[!ht]
   \centering
@@ -374,7 +376,8 @@ Komanda projektni uzorak enkapsulira zahtev kao objekat što omogućuje parametr
   \label{fig:komanda}
 \end{figure}
  
-Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:komanda} možemo da vidimo primer sistema koji ima posebnu Lambda funkciju koja kontroliše i poziva ostale funkcije. Ona može biti prikljucena na gejtvej (engl. gateway), pozvana ručno tako što joj se prosledi poruka koje funkcije da pozove. Komandna funkcija može da radi sa različitim verzijama klijenata.
+%AWS Lambda funkciju ili samo funkciju?
+Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:komanda} možemo da vidimo primer sistema koji ima posebnu AWS Lambda funkciju koja kontroliše i poziva ostale funkcije. Ona može biti prikljucena na gejtvej (engl. gateway), pozvana ručno tako što joj se prosledi poruka koje funkcije da pozove. Komandna funkcija može da radi sa različitim verzijama klijenata.
 
 \subsection{Poruke uzorak} % Kako prevesti Messaging pattern?
 
@@ -388,7 +391,7 @@ Poruke (engl. messaging) projektni uzorak omogućava razvijaocima softvera da na
 \end{figure}
  
 \subsection{Nizovi sa prioritetom}
-Nizovi za proritetom su projektni obrazac koji se koristi ukoliko postoji potreba da se različiti nivoi kontole, prioriteta. Uvođenjem dodatnih nizova postiže se da različiti nizovi mogu da se obrađuju na različrite načine. Uvođenjem prioritetnih nivoza postiže se da neki zahtevi mogu da se obrade pre drugih sa manjim prioritetom. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:nizovi} može se videti primer arhitekture sa više nizova sa različitim prioritetima.
+Nizovi sa prioritetom su projektni obrazac koji se koristi ukoliko postoji potreba za različitim nivoi kontole ili prioriteta. Uvođenjem dodatnih nizova postiže se da različiti nizovi mogu da se obrađuju na različrite načine. Uvođenjem prioritetnih nivoza postiže se da neki zahtevi mogu da se obrade pre drugih sa manjim prioritetom. Na slici\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:nizovi} može se videti primer arhitekture sa više nizova sa različitim prioritetima.
 
 \begin{figure}[!ht]
   \centering
@@ -462,7 +465,7 @@ U ovom poglavlju su definisane sve funkcije koje su razvijene kao deo servisa. S
   \label{fig:createBikeFunc}
 \end{figure}
 
-% ne moze da nadje js [language=JavaScript]
+% ne moze da nađe js [language=JavaScript]
 % kod prelazi ograniceni format, ruzno izgleda, moze li da se oboji pozadina?
 % \begin{lstlisting}
 % module.exports.createBike = async event => {
@@ -865,10 +868,11 @@ Kada kornisnik instalira aplikaciju od njega se zahteva da se uloguje na aplikac
   \item Sadrži barem jedan broj.
 \end{enumerate}
  
-
+%TODO Kako organizovati ove slike? Koja visina i sirina?
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{Registracija.jpg}
+  \includegraphics[height=0.5\textwidth]{Registracija.jpg}
+  % \includegraphics[width=0.5\textwidth]{Registracija.jpg}
   \caption{Registracija korisnika}
   \label{fig:registracijaKorisnika}
 \end{figure}
@@ -885,7 +889,8 @@ Kada se prijavi na aplikaciju, korisniku se pokazuje lista lokacija bicikli. Na 
 
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{Odabir bicikle za iznajmljivanje.jpg}
+  \includegraphics[height=0.5\textwidth]{Odabir bicikle za iznajmljivanje.jpg}
+  % \includegraphics[width=0.5\textwidth]{Odabir bicikle za iznajmljivanje.jpg}
   \caption{Odabir bicikle za iznajmljivanje}
   \label{fig:odabirBicikle}
 \end{figure}
@@ -894,32 +899,41 @@ Kada se prijavi na aplikaciju, korisniku se pokazuje lista lokacija bicikli. Na 
 
 Kako servis koristi AWS Cognito servis za autentifikaciju i autorizaciju, proces registracije izvršava sam AWS Cognito servis. Svi korisnici imaju neverifikovan nalog dok ne potvrde email adresu posle registracije. Servis je konfiguirsan da se email koristi kao korisničko ime. Takođe uslovi koje šifra treba da zadovolji su postavljeni kada je konfigurisan servis. Na servisu je napravljena posebna grupa za admin korisnike. Da bi korisnik bio admin korisnik mora da zavodolji dva uslova. Prvi je da mora da ima verifikovan nalog a drugi je da mora ručno preko konzole da se dodeli admin grupi. Zbog organizacije AWS Cognito servisa, potrebno je vreme da se promena korisničke grupe propagira kroz sistem pa korisnik možda ne bude odmah svrstan u admin korisnike.
  
- 
-Funkcionalnosti aplikacije korisnika koji je admin i regularnog korisnika se razlikuju. Običan korisnik je u mogućnosti da iznajmljuje bicikle dok ta operacije nije omogućena admin korisniku. Nakon što se admin korisnik uloguje u aplikaciju na raspolaganje mu se stavlja izbor lokacije i opcija da doda novu biciklu u sistem. Ukoliko korisnik odabere lokaciju, aplikacija mu izlistava sve bicikle za tu lokaciju. To znači da admin korisnik može da vidi i bicikle koje u iznajmljene, one koje su deaktivirane i one koje su aktivne a ne iznajmljene. Ukoliko je bicikla deaktivirana to znači da neće biti stavljena na raspologanje regularnim korisnicima, niko neće moći da je iznajmi. Ova funkcionalnost je uvedena za slučaj da bicikla mora da ide u servis pa ne možemo da je ponudimo korisniku. Odabirom bicikle, admin korisnik može da je aktivira, deaktivira ili obriše pritiskom na dugme. Važno je napomenuti da admin korisnik ne može da deaktivira ili obriše biciklu koju neko trenutno koristi. U slučaju da pokuša, aplikacija vraća grešku. Kada jednom admin korisnik deaktivira biciklu, ona više neće biti stavljena na raspolaganje korisniku. Ukoliko pak admin korisnik obiše biciklu, servis je biriše iz baze pa više ni admin korisnik a ni regularni korisnik neće moći da je vidi kroz aplikaciju. Na slici\ref{fig:adminKorisnikInterfejs} možemo videti primer interfejsa za admin korisnike.
 
-
+% TODO Kako ovo smanjiti?
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{AdminKorisnikInterfejs.jpg}
+  \includegraphics[height=0.5\textwidth]{AdminKorisnikInterfejs.jpg}
+  % \includegraphics[width=0.5\textwidth]{AdminKorisnikInterfejs.jpg}
   \caption{Prikaz interfejsa admin korisnika}
   \label{fig:adminKorisnikInterfejs}
 \end{figure}
+
+ 
+Funkcionalnosti aplikacije korisnika koji je admin i regularnog korisnika se razlikuju. Običan korisnik je u mogućnosti da iznajmljuje bicikle dok ta operacije nije omogućena admin korisniku. Nakon što se admin korisnik uloguje u aplikaciju na raspolaganje mu se stavlja izbor lokacije i opcija da doda novu biciklu u sistem. Ukoliko korisnik odabere lokaciju, aplikacija mu izlistava sve bicikle za tu lokaciju. To znači da admin korisnik može da vidi i bicikle koje u iznajmljene, one koje su deaktivirane i one koje su aktivne a ne iznajmljene. Ukoliko je bicikla deaktivirana to znači da neće biti stavljena na raspologanje regularnim korisnicima, niko neće moći da je iznajmi. Ova funkcionalnost je uvedena za slučaj da bicikla mora da ide u servis pa ne možemo da je ponudimo korisniku. Odabirom bicikle, admin korisnik može da je aktivira, deaktivira ili obriše pritiskom na dugme. Važno je napomenuti da admin korisnik ne može da deaktivira ili obriše biciklu koju neko trenutno koristi. U slučaju da pokuša, aplikacija vraća grešku. Kada jednom admin korisnik deaktivira biciklu, ona više neće biti stavljena na raspolaganje korisniku. Ukoliko pak admin korisnik obiše biciklu, servis je biriše iz baze pa više ni admin korisnik a ni regularni korisnik neće moći da je vidi kroz aplikaciju. Na slici\ref{fig:adminKorisnikInterfejs} možemo videti primer interfejsa za admin korisnike.
 
 
 Pored operacija aktiviranja, deaktiviranja i brisanja bicikle, admin korisniku se stavlja na raspolaganje i operacija kreiranja bicikle. Korisnik aktivira aktivnost pritiskom na drugme za kreiranje bicikle. Zatim se korisnik prebacuje na prozor\ref{fig:kreiranjeNovihBicikli} za kreiranje bicikle gde se traži da unese podatke o proizvođaču, godini proizvodnje, lokaciji. Aplikacija validira podatke i u slučaju da nisu uneta sva polja ili unosi nisu validni, aplikacija neće dozvoliti kreiranje bicikle i obavestiće korisnika koje polje treba da se promeni. Kada verifikacija prođe, aplikacija šalje zahtev servisu i korisnik se obaveštava o uspešnosti operacije. Na istom prozoru korisniku je omogućeno i da se vrati na prethodni ekran i prekine proces kreiranja bicikle. Takođe korisniku je omogućeno da se odjavi sa aplikacije pritiskom na dugme.
  
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{Kreiranje nove bicikle.jpg}
+  \includegraphics[height=0.5\textwidth]{Kreiranje nove bicikle.jpg}
+  % \includegraphics[width=0.5\textwidth]{Kreiranje nove bicikle.jpg}
   \caption{Prikaz interfjesa za kreiranje novih bicikli}
   \label{fig:kreiranjeNovihBicikli}
 \end{figure}
 
 
 % ------------------------------------------------------------------------------
-\chapter{Zakljucak}
+\chapter{Zaključak}
 % ------------------------------------------------------------------------------
-Treba da se doda!
+
+U radu su prikazani ključni koncepti i tehnologije na kojima se zasniva razvoj softvera zasnovanog na arhitekturi bez servera. Razmatrali smo i projektne uzorke softverske arhitekture kao i arhitekture bez servera. Opisali smo prednosti i mane računarskih modela računarstva u oblaku sa posebnim fokusom na model "funkcija kao usluga". Izrada softvera u skladu sa arhitekturom bez servera može doneti dosta benefita u vidu smanjenja troškova i količine operativnih zadataka kao i sposobnosti prilagođavanja promenama inteziteta dolaznog saobraćaja. Sa druge strane postoji vremensko organičenje izvršavanja operacije, spor odziv u nekim slučajevima kao i potencijalna zavisnost od pružaoca usluga. Arhitektura bez servera predstavlja jednu od alternativa klasičnom razvoju arhitekture sistema u oblaku.
+
+U nastavku smo detaljnije razmatrali primer veb servisa koji je zasnovan na arhitekturi bez servera koji je razvijen u praktičnom delu projekta. Objasnili smo njegovu arhitekturu kao i način upotrebe. Dalje smo razmatrali princip automatizovanja infrastrukture pod nazivom "Infrastruktura kao kod" kao i serverles alat koji je korišćen priliko razvoja veb servisa. Takođe obradili smo i sve korišćene servise sa akcentom na AWS Lambda servis. Na kraju smo razmotrili i android aplikaciju koja je bila naamenjena kao demonstracija klijentske aplikacije. Zajedno veb servis i aplikacija pružaju uvid na način razvoja aplikacija zasnovanih na arhitekturi bez servera. 
+
+Pružaoci usluga svake godine proširuju funkcionalnosti servisa zasnovanih na računarstvu bez servera. U radu smo naveli i primere kompanija koje već uveliko koriste servise zasnovane na računarstvu bez servera. Mišljenje autora ovog rada je da će u narednom vremenu ovaj vid računarstva još više dobiti na značaju kako se više korisnika bude upoznalo sa tehnologiom.
+
 % ------------------------------------------------------------------------------
 % Literatura
 % ------------------------------------------------------------------------------
@@ -933,7 +947,7 @@ Treba da se doda!
 % ------------------------------------------------------------------------------
 % Biografija kandidata
 \begin{biografija}
-  \textbf{Vojkan Cvijović}
+  \textbf{Vojkan Cvijović} je rođen u Užicu 16. avgusta 1994. godine. Osnovnu i srednju škoklu je završio u Užicu. Osnovne studije na Matematičkom fakultetu, smer Infromatika, upisuje 2013. godine i završava 2017. kada upisuje i master studije na istom smeru. Od 2016. godine radi u multinacionalnoj kompaniji Endavi na razvoju platforme za isporučivanje okruženja u oblaku. Okruženje je zasnovano na virtuelnim mašinama i služi za pokretanje sistema za upravljanje sadržajem.
 \end{biografija}
 % ------------------------------------------------------------------------------
 
