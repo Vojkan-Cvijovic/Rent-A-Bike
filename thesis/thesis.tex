@@ -5,6 +5,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{float}
+\usepackage{hyperref}
 
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -32,6 +33,18 @@
 }
 
 \lstset{style=mystyle}
+
+\usepackage{caption}
+\usepackage{varwidth}
+
+\DeclareCaptionFormat{myformat}{%
+  \begin{varwidth}{\linewidth}%
+    \centering
+    #1#2#3%
+  \end{varwidth}%
+}
+
+\captionsetup{format=myformat}
 
 % \usepackage[biblatex]{matfmaster}
 % \bib{thesis}
@@ -71,7 +84,7 @@ U ovom radu će biti predstavljen razvoj skalabilnog veb servisa zasnovanog na a
 % Strana sa podacima o mentoru i članovima komisije
 \komisija
 % Strana sa posvetom (u odabranom pismu)
-\posveta{Mami, tati i dedi}
+\posveta{Mami, tati i sestri}
 % Strana sa podacima o disertaciji na srpskom jeziku
 \apstrakt
 % Sadržaj teze
@@ -96,38 +109,39 @@ Sa arhitekturom bez servera (engl. serverless architecture) klijent ne poseduje 
 
 
 \section{Virtuelizacija}
-Virtuelizacija se odnosi na apstrakciju neke fizičke kompotente u logičku komponentu. Virtuelizacija je ključna za funkcionisanje računarstva u oblaku. Ona omogućava pružaocima usluga da svojim klijentima brzo omoguće izolovan servis. Po definiciji virtuelna mašina može da virtuelizuje sve hardverske komponente, ukljucujući procesor, memorijski prostor i mrežnu organizaciju \cite{ve}. Monitor virtuelne mašine je softver koji spaja virtuelnu mašinu i server na kome se nalazi virtuelna mašina. Jos je poznat i kao hipervizor. Računar na kojem hipervizor pokreće jednu ili više virtuelnih mašina naziva se domaćin (engl. host) mašina, a svaka virtualna mašina se naziva gostujuća (engl. guest) mašina. Hipervizor dolazi u dva oblika. Kao sloj između serverskom operativnog sistema i gostujuće virtuelne mašine ili virtuelne mašine i samog hardvera \cite{ve}. Poslednji koriste operativni sistemi poput Windows i Linux operativnog sistema. Razlikuju se dve vrste virtuelizacije, virtuelizaciju zasnovanu na hipervizoru i virtuelizaciju zasnovanu na kontejnerima.
+Virtuelizacija se odnosi na apstrakciju neke fizičke kompotente u logičku komponentu. Virtuelizacija je ključna za funkcionisanje računarstva u oblaku. Ona omogućava pružaocima usluga da svojim klijentima brzo omoguće izolovan servis. Po definiciji virtuelna mašina može da virtuelizuje sve hardverske komponente, uključujući procesor, memorijski prostor i mrežnu organizaciju \cite{ve}. Monitor virtuelne mašine je softver koji spaja virtuelnu mašinu i server na kome se nalazi virtuelna mašina. Jos je poznat i kao hipervizor. Računar na kojem hipervizor pokreće jednu ili više virtuelnih mašina naziva se domaćin (engl. host) mašina, a svaka virtualna mašina se naziva gostujuća (engl. guest) mašina. Hipervizor dolazi u dva oblika. Kao sloj između serverskom operativnog sistema i gostujuće virtuelne mašine ili virtuelne mašine i samog hardvera \cite{ve}. Poslednji koriste operativni sistemi poput Windows i Linux operativnog sistema. Razlikuju se dve vrste virtuelizacije, virtuelizaciju zasnovanu na hipervizoru i virtuelizaciju zasnovanu na kontejnerima.
  
 Velike kompanije poput Google, Amazon i Microsoft imaju svoje centre podataka u kojima su smešteni serveri velike snage. Kako je prateći Murov zakon (engl. Moor's Law) hardverska snaga rasla tako je model jedan server, jedna aplikacija zastarevao. Takvi serveri su imali slabu iskorišćenost. Virtuelizacija omogućava bolju iskorišćenost servera. Ideja virtuelizacije nije nova. Još su se u šezdesetim IBM koristili mejnfrejm (engl. mainframe) računari sa virtuelnim okruženjima. Virtuelizacija je omogućila grupisanje više fizičkih mašina u manji broj servera koji bi dalje pokretali veći broj virtuelnih mašina i samim tim podigli iskorišćenost servera. Što je bolja iskorišćenost servera to je manji broj servera potreban u sali a samim tim i manji su troskovi za njihovo održavanje, manje zaposlenih mora da ih održava i manje energije se utroši na njihovo hlađenje. Pored mogućnosti grupisanja (engl. consolidation), virtuelizaija je omogućila i mogućnost zadržavanja (engl. containment) aplikacija na postojećoj virtuelnoj infrastrukturi. To je kompanijama omogućilo lak prenos virtuelnih mašina sa jednog hardvera na drugi. Administratori mogu da zaustave virtuelnu mašinu u svakom trenutku i da je lako oporave na prethodno ispravno stanje. Računarstvo u oblaku bi bilo nemoguće bez virtuelizacije kako ona omogućava da se veliki centri podataka transformišu u skalabilne i lako dostupne resurse. Virtuelizacija omogućava transformaciju centara u virtuelne centre podataka što dalje olakšava dostavljanje resursa klijentu. Virtuelni centri podataka se dalje organizuju po virtuelnim regionima \cite{ve}.
 
 \subsection{Virtuelizacija zasnovana na hipervizorima}
-Hipervizor se može posmatrati kao arbitar resursa. To je softver koji se nalazi između virtuelne mašine i samog fizičkog hardvera kao što se može videti na slici\ref{fig:hipervizor}. Omogućava virtuelnoj mašini da upravlja sa memoriom, da pristupa virtuelnim mrežama za komunikaciju, efikasno korišćenje sve veće memorije kod novijih procesora \cite{ve}. Bez hipervizora svaka virtuelna mašina bi morala direktno da pristupa disku što bi napravilo problem ako bi jos jedna mašina izvršavala paralelno operaciju pristupa disku. Hipervozor se stara da svaka virtuelna mašina može da koristi hardver bez obzira na ostale virtuelne mašine.
+Hipervizor se može posmatrati kao arbitar resursa. To je softver koji se nalazi između virtuelne mašine i samog fizičkog hardvera kao što se može videti na Slici \ref{fig:hipervizor}. Omogućava virtuelnoj mašini da upravlja sa memoriom, da pristupa virtuelnim mrežama za komunikaciju, efikasno korišćenje sve veće memorije kod novijih procesora \cite{ve}. Bez hipervizora svaka virtuelna mašina bi morala direktno da pristupa disku što bi napravilo problem ako bi jos jedna mašina izvršavala paralelno operaciju pristupa disku. Hipervozor se stara da svaka virtuelna mašina može da koristi hardver bez obzira na ostale virtuelne mašine.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{Slika 1.jpg}
-  \caption{Hipervizor\newline[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
+  \caption{Hipervizor\\\footnotesize[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
   \label{fig:hipervizor}
 \end{figure}
  
 Postoje dva tipa hipervizora a to su tip 1 i tip 2. U nastavku rada su predstavljene njihove karakteristike.
  
 \subsubsection{Tip 1 hipervizor}
-Kao što se može videti na slici\ref{fig:hipervizorTip1}, ovaj tip hipervizora se nalazi se direktno na serverskom hardveru bez operativnog sistema ispod. Direktno komunicira sa hardverom što ga čini mnogo efikasnijim od tipa 2. Ne postoji trošak održavanja operativnog sistema koji bi služio kao posrednik. Pored boljih performansi tip 1 hipervizori su bezbedniji. Virtuelne mašine koje se izvršavaju iznad hipervizora, ne mogu da utiču na hipervizor. One su ograđene u svoj prostor i mogu da izazovu pad samo sopstvene virtuelne mašine. Ostale virtuelne mašine ostaju neometene.
+Kao što se može videti na Slici \ref{fig:hipervizorTip1}, ovaj tip hipervizora se nalazi se direktno na serverskom hardveru bez operativnog sistema ispod. Direktno komunicira sa hardverom što ga čini mnogo efikasnijim od tipa 2. Ne postoji trošak održavanja operativnog sistema koji bi služio kao posrednik. Pored boljih performansi tip 1 hipervizori su bezbedniji. Virtuelne mašine koje se izvršavaju iznad hipervizora, ne mogu da utiču na hipervizor. One su ograđene u svoj prostor i mogu da izazovu pad samo sopstvene virtuelne mašine. Ostale virtuelne mašine ostaju neometene.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{Slika 2.jpg}
-  \caption{Hipervizor tip 1\newline[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
+  \caption{Hipervizor tip 1\\\footnotesize[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
   \label{fig:hipervizorTip1}
 \end{figure}
- 
+
+
 \subsubsection{Tip 2 hipervizor}
-Tip 2 hipervizor je zapravo aplikacija koja radi na postojećem operativnom sistemu što se može videti na slici\ref{fig:hipervizorTip2}. Lakši su za instalaciju kako ne zahtevaju veliki obim konfigurisanja. Podešavanja prostora za podatke i mreža su već odrađeni od strane postojećeg oprativnog sistema. Ovaj tip hipervizora može da podržava veliki broj različitih hardverskih komponenti kako su one već podržane od strane operativnog sistema na kome je hipervizor instaliran. Tip 2 hipervizora ima slabiju efikasnost od tipa 1 \cite{ve}. Kako radi sa posrednikom, operativnim sistemom, operacije nisu direktne pa su samim tim i sporije. Svaku operaciju koju virtuelna mašina prosledi hipervizoru, on dalje mora da prosledi operativnom sistemu, koji mora da je pročita i dalje izvrši odgovarajuću operaciju na hardveru. Za razliku od tipa 1 gde ne postoji posrednika i sve operacije se izvršavaju direktno na hardveru. Iz tog razloga je tip 1 efikasniji od tipa 2. 
+Tip 2 hipervizor je zapravo aplikacija koja radi na postojećem operativnom sistemu što se može videti na Slici \ref{fig:hipervizorTip2}. Lakši su za instalaciju kako ne zahtevaju veliki obim konfigurisanja. Podešavanja prostora za podatke i mreža su već odrađeni od strane postojećeg oprativnog sistema. Ovaj tip hipervizora može da podržava veliki broj različitih hardverskih komponenti kako su one već podržane od strane operativnog sistema na kome je hipervizor instaliran. Tip 2 hipervizora ima slabiju efikasnost od tipa 1 \cite{ve}. Kako radi sa posrednikom, operativnim sistemom, operacije nisu direktne pa su samim tim i sporije. Svaku operaciju koju virtuelna mašina prosledi hipervizoru, on dalje mora da prosledi operativnom sistemu, koji mora da je pročita i dalje izvrši odgovarajuću operaciju na hardveru. Za razliku od tipa 1 gde ne postoji posrednika i sve operacije se izvršavaju direktno na hardveru. Iz tog razloga je tip 1 efikasniji od tipa 2. 
 Ovaj tip hipervizora je takođe manje pouzdan od tipa 1. Kako postoji operativni sistem na kome se hipervizor nalazi, taj operativni sistem je potrebno održavati. Ponekad je potrebno i restartovati operativni sistem da bi se zavrsila instalacija, to dalje prouzrokuje da se sve virtuelne mašine moraju restartovati. Tip 2 hipervizori se obično nalaze na desktop računarima gde korisnici mogu da rade na više različitih virtuelnih mašina, dok se tip 2 nalazi na serverima čiji jedini zadatak je da služe za izvršavanje virtuelnih mašina.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{Slika 3.jpg}
-  \caption{Hipervizor tip 2\newline[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
+  \caption{Hipervizor tip 2\\\footnotesize[preuzeto iz knjige Virtualization essentials, autora Matthew Portnoy]}
   \label{fig:hipervizorTip2}
 \end{figure}
 
@@ -139,11 +153,12 @@ Virtuelizacija zasnovana na kontejnerima se izvršava na nivou operativnog siste
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{Slika 4.jpg}
-  \caption{Kontejneri\newline[preuzeto iz knjige Microservices and containers, autora Parminder Kocher]}
+  \caption{Kontejneri\\\footnotesize[preuzeto iz knjige Microservices and containers, autora Parminder Kocher]}
   \label{fig:kontejneri}
 \end{figure}
- 
-Kao sto se vidi na slici\ref{fig:kontejneri}. Kontejneri omogućavaju izolaciju aplikacije od ostalih aplikacija na serveru. Kontejner može da funkcioniše bez znanja koliko jos kontejnera se izvršava na operativnom sistemu. Svi kontejneri dele isti kernel i odgovornost za to je na strani operativnog sistema. Svaki operativni sistem ima metode za obezbeđivanje izolacije kontejnera. Na Linux operativnom sistemu su to kontrolne grupe (engl. control groups) i prostor imenovanja (engl. namespace). Iz tog razloga može se izvršavati više kontejnera na zadatom hardveru nego virtuelnih mašina \cite{mac}. 
+
+
+Kao sto se vidi na Slici \ref{fig:kontejneri}. Kontejneri omogućavaju izolaciju aplikacije od ostalih aplikacija na serveru. Kontejner može da funkcioniše bez znanja koliko jos kontejnera se izvršava na operativnom sistemu. Svi kontejneri dele isti kernel i odgovornost za to je na strani operativnog sistema. Svaki operativni sistem ima metode za obezbeđivanje izolacije kontejnera. Na Linux operativnom sistemu su to kontrolne grupe (engl. control groups) i prostor imenovanja (engl. namespace). Iz tog razloga može se izvršavati više kontejnera na zadatom hardveru nego virtuelnih mašina \cite{mac}. 
 
 Kontejneri su lakši za izvršavanje kako im ne treba ceo operativni sistem ali virtuelne mašine prižaju bolju izloaciju kako ne dele direktno resurse sa operativnim sistemom. Kontejneri takođe efikasnije koriste hardverske resurse. Ovaj tip kontejnera je jos poznat kao Linux kontejneri (engl. Linux containers) ili LXCs. Postoji još i tip Doker (engl. Docker) kontejnera. Doker je uveo par promena koje su učinile da su kontejneri postali pristupačniji, fleksibilniji i lako prenosni \cite{gswc}. Razlike između LXC i Doker kontejnera:
 \begin{enumerate}
@@ -166,22 +181,22 @@ Karakteristike računarstva u oblaku:
   \item Izmerena usluga (engl. measured service). Upotreba resursa se može pratiti, proveravati i o njoj se mogu praviti izveštaji pružajući transparentan uvid o uslugama i korisnicima. Klijent plaća računarske resurse koje je koristio.
 \end{enumerate}
 
-Kao sto se može videti na slici\ref{fig:servisniModeli}, u zavisnosti od nivoa kontrole infrastrukture koje je dato klijentu, razlikuju se tri servisna modela računarstva u oblaku. U nastvaku rada predstavljene su njihove prednosti i mane.
+Kao sto se može videti na Slici \ref{fig:servisniModeli}, u zavisnosti od nivoa kontrole infrastrukture koje je dato klijentu, razlikuju se tri servisna modela računarstva u oblaku. U nastvaku rada predstavljene su njihove prednosti i mane.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{Slika 5.png}
-  \caption{Servisni modeli\newline[preuzeto sa sajta https://dev.to]}
+  \caption{Servisni modeli\\\footnotesize[preuzeto sa sajta https://dev.to]}
   \label{fig:servisniModeli}
 \end{figure}
  
 \subsection{Infrastruktura kao servis}
 
-U ovom modelu sva kontrola računarskog hardvera je data na raspolaganje klijentu. Pružalac usluga se stara u hardveru i pratećoj infrastrukturi dok je klijentu predata potpuna kontrola nad operativnim sistemom i njegovim komponentama. Klijent mora sam da se stara o održavanju sistema, ažuriranju softvera, praćenju opterećenosti računarskih resursa poput procesora i memorije. Klijentu je prepušteno da se sam stara o pravljenju sigurnosnih kopija same mašine za slučaj otkazivanja neke komponente. Ovaj model može biti izazovan za manje firme koje ne mogu da priušte tim zaposlenih koji će se baviti održavanjem virtuelnih mašina. Model je predviđen za velike kompanije koje žele punu kontrolu nad svojim resursima a ne žele da ih drže u svojim centrima podataka \cite{cc}. Komercijalni primeri modela infrstruktura kao servis su Amazon Elastic Compute Cloud, Google Compute Engine i Azure Virtual Machines. %-> Kako ovo navesti? 
+U ovom modelu sva kontrola računarskog hardvera je data na raspolaganje klijentu. Pružalac usluga se stara u hardveru i pratećoj infrastrukturi dok je klijentu predata potpuna kontrola nad operativnim sistemom i njegovim komponentama. Klijent mora sam da se stara o održavanju sistema, ažuriranju softvera, praćenju opterećenosti računarskih resursa poput procesora i memorije. Klijentu je prepušteno da se sam stara o pravljenju sigurnosnih kopija same mašine za slučaj otkazivanja neke komponente. Ovaj model može biti izazovan za manje firme koje ne mogu da priušte tim zaposlenih koji će se baviti održavanjem virtuelnih mašina. Model je predviđen za velike kompanije koje žele punu kontrolu nad svojim resursima a ne žele da ih drže u svojim centrima podataka \cite{cc}. Komercijalni primeri modela infrstruktura kao servis su Amazon Elastic Compute Cloud, Google Compute Engine i Azure Virtual Machines. 
 
  
 \subsection{Platforma kao servis}
-U ovom modelu klijentu nije omogućeno upravljanje infrastrukturom ukljucujući operativnim sistemom, mrežnim podešavanja, prostorom za skladištenje podataka. O operativnom sistemu, pratećim komponentama i njihovom održavanju se stara pružalac usluga. Pružalac usluga klijentu nudi skup softverskih i hardverskih alata koji treba da mu pomognu u upravljanju aplikaciom. Korisniku nije omogućeno upravljanje infrastrukturom ali omogućeno mu je da kroz konfiguraciju prilagodi infrastrukturu u određenoj meri. U zavisnosti od potreba klijenti se mogu opredeliti za rešenja bazirana na Windows ili Linux operativnom sistemu. Korisnik može imati poteškoće prilikom integrisanja sa postojećim servisima iz svog centra podataka. Takođe postoji opasnost od zaključavanja kod konkretnog pružaoca usluga(engl. vendor locking) posle čega će migracija biti otežana \cite{cc}. Primeri komercijalnih rešenja su Heroku, Google App Engine, WordPress i AWS Elastic Beanstalk. %-> Kako ovo navesti? 
+U ovom modelu klijentu nije omogućeno upravljanje infrastrukturom uključujući operativnim sistemom, mrežnim podešavanja, prostorom za skladištenje podataka. O operativnom sistemu, pratećim komponentama i njihovom održavanju se stara pružalac usluga. Pružalac usluga klijentu nudi skup softverskih i hardverskih alata koji treba da mu pomognu u upravljanju aplikaciom. Korisniku nije omogućeno upravljanje infrastrukturom ali omogućeno mu je da kroz konfiguraciju prilagodi infrastrukturu u određenoj meri. U zavisnosti od potreba klijenti se mogu opredeliti za rešenja bazirana na Windows ili Linux operativnom sistemu. Korisnik može imati poteškoće prilikom integrisanja sa postojećim servisima iz svog centra podataka. Takođe postoji opasnost od zaključavanja kod konkretnog pružaoca usluga(engl. vendor locking) posle čega će migracija biti otežana \cite{cc}. Primeri komercijalnih rešenja su Heroku, Google App Engine, WordPress i AWS Elastic Beanstalk. %-> Kako ovo navesti? 
 
 
 \subsection{Softver kao servis}
@@ -208,12 +223,12 @@ Predstavlja spoj javnog i privatnog oblaka. Sastavljeni su od dva ili više obla
 
 
 \section{Projektni uzorci softverske arhitekture}
-Arhitektura bez servera omogućava skaliranje pojedinačnih komponenti što može uticati na opštu arhitekturu softvera. Da bi smo u potpunosti iskoristili bonuse arhitekture bez servera, arhitektura softvera mora biti adekvatna. U arhitekturi bez servera svaka komponenta, funkcija ili svaki servis moraju biti lagani (engl. lightweight) i agilni. Funkcije se skaliraju pa je obavezno da imaju kratko vreme startovanja. U ovom poglavnju se razmatraju karakteristike monolitne i mikroservisne arhitekture. Na slici\ref{fig:arhitekturniProjektniUzorci} se može videti razlika između monolitne i mikroservisne arhitekture na primeru veb (engl. web) aplikacije.
+Arhitektura bez servera omogućava skaliranje pojedinačnih komponenti što može uticati na opštu arhitekturu softvera. Da bi smo u potpunosti iskoristili bonuse arhitekture bez servera, arhitektura softvera mora biti adekvatna. U arhitekturi bez servera svaka komponenta, funkcija ili svaki servis moraju biti lagani (engl. lightweight) i agilni. Funkcije se skaliraju pa je obavezno da imaju kratko vreme startovanja. U ovom poglavnju se razmatraju karakteristike monolitne i mikroservisne arhitekture. Na Slici \ref{fig:arhitekturniProjektniUzorci} se može videti razlika između monolitne i mikroservisne arhitekture na primeru veb (engl. web) aplikacije.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{Slika 6.jpg}
-  \caption{Primer veb aplikacije u monolitnoj i mikroservisnoj arhitekturi\newline[preuzeto sa sajta https://www.suse]}
+  \caption{Primer veb aplikacije u monolitnoj i mikroservisnoj arhitekturi\\\footnotesize[preuzeto sa sajta https://www.suse]}
   \label{fig:arhitekturniProjektniUzorci}
 \end{figure}
 
@@ -243,7 +258,7 @@ Mikroservisna arhitektura uvodi dodatnu kompleksnost prilikom dizajniranja proje
 \chapter{Računarstvo bez servera}
 \label{chp:razrada}
 
-Računarstvom bez servera (engl. serverless computing) je može nazvati svaki softver (engl. software) koji se isporučuje korisniku kao usluga i naplaćuje se samo kada se koristi\cite{sa}. Softver kao usluga je servisni modeli računarstva u oblaku koji podrazumeva da svako ko koristi softver, koristi ga kroz veb interfejs. Neki primeri softvera kao usluga su Office365 i GoogleMaps. Prateća infrastruktura je sakrivena od korisnika, sve konfiguracije su korisniku dostupne proz veb interfejs. Kreiranje, održavanje, upravljanje prateće infrastrukture je dužnost pružaoca usluga i korisnik može da se fokusira na razvoj sopstvene aplikacije. Osobina da se softver naplaćuje samo kada se koristi označava da korisnik nema troskove dok priprema i konfiguriše softver, troškovi se računaju tek kada softver počne da se koristi.
+Računarstvom bez servera (engl. serverless computing) je može nazvati svaki softver (engl. software) koji se isporučuje korisniku kao usluga i naplaćuje se samo kada se koristi \cite{sa}. Softver kao usluga je servisni modeli računarstva u oblaku koji podrazumeva da svako ko koristi softver, koristi ga kroz veb interfejs. Neki primeri softvera kao usluga su Office365 i GoogleMaps. Prateća infrastruktura je sakrivena od korisnika, sve konfiguracije su korisniku dostupne proz veb interfejs. Kreiranje, održavanje, upravljanje prateće infrastrukture je dužnost pružaoca usluga i korisnik može da se fokusira na razvoj sopstvene aplikacije. Osobina da se softver naplaćuje samo kada se koristi označava da korisnik nema troskove dok priprema i konfiguriše softver, troškovi se računaju tek kada softver počne da se koristi.
 
 Početak bez serverskog računarsva se vezuje za pojavu platforme Zimki (engl. Zimki) 2006. godine koju je razvilo odeljenje kompanije Canon (engl. Canon, Inc). Zatim 2008. godine Google objavljuje svoju verziju platforme za bez serversko računarstvo pod nazivom Google App Engine. Mnogim programerima ova platforma je bila previše restriktivna i nije se smatrala kao rešenje spremno za produkciju \cite{ls}. Iako je objavljena 2008. godine, tek 2011. godine izlazi zvanična verzija. Ona je omogućavala samo izvršavanje Python skripti. Termin bez servera (engl. serverless) je prvi put uveden 2012. godine u članku koji je napisao Ken From (engl. Ken Fromm) na sajtu Iron.io \cite{wtfosaais}. Kompanija Amazon lansira svoju verziju platforme pod nazivom AWS Lambda 2015. godine. Zatim kompanija Google izbacuje svoj servis za bez serversko računarstvo Google Cloud Functions 2016. Iste godine Microsoft objavljuje Microsoft Azure Cloud Functions. Postoje i primeri platformi otvorenog koda (engl. open source) koji mogu da se izvršavaju u privatnom oblaku. Neki primeri su Kubeless, OpenWhisk, Fission, OpenFaaS, and Knative \cite{ws}.
 
@@ -254,8 +269,9 @@ Postoje dva bezserverska modela računarstva u oblaku (engl. Serverless cloud co
 
 %third-party? prevod
 %bekend, prevod?
-Zadnji kraj kao usluga se odnosi na usluge trećih lica (engl. third-party) koje su dostupne preko aplikativnog interfejsa (engl. Application Programming Interface - API) i koriste se da bi upotpunili ili zamenili neke funkcionalnosti u aplikaciji. Na primer pružalac usluga može omogućiti servis za autentifikaciju, mehanizam dodatne enkripcije ili pristup bazama podataka u oblaku. Ovi servisi se uglavnom koriste kod jednostavnijih veb aplikacije ili mobilnih aplikacija za autentifikaciju \cite{wis} \cite{bsa}. Neki od komercijalnih primera su AWS Amplify i Firebase \cite{baasp}.
+Zadnji kraj kao usluga se odnosi na usluge trećih lica (engl. third-party) koje su dostupne preko aplikativnog interfejsa (engl. Application Programming Interface - API) i koriste se da bi upotpunili ili zamenili neke funkcionalnosti u aplikaciji. Na primer pružalac usluga može omogućiti servis za autentifikaciju, mehanizam dodatne enkripcije ili pristup bazama podataka u oblaku. Ovi servisi se uglavnom koriste kod jednostavnijih veb aplikacije ili mobilnih aplikacija za autentifikaciju \cite{wis, bsa}. Neki od komercijalnih primera su AWS Amplify i Firebase \cite{baasp}.
 
+% \cite{bsa}
 \subsection{Funkcija kao usluga}
 Funkcija kao usluga omogućava da se kôd isporuči pružaocu usluga a dalje pružalac usluga se stara da se taj kôd izvršava kao deo funkcije. Ove funkcije se pokreću na određeni dolazni događaj koji je zadat kada je i napravljena funkcija. Događaji mogu biti HTTP (engl. HyperText Transfer Protocol) pozivi, poruke, događaj koji se napravi kada se na primer fajl okači na AWS S3 servis, upis u bazu. Na primer, korisnik može da konfiguriše funkciju da kada se okači slika na AWS S3 servis, funkcija se aktivira i promeni format slike u adekvatni format. Pružalac usluga vodi računa o skaliranju infrastrukture pa korisniku deluje kao da server ni ne postoji. 
 
@@ -265,12 +281,12 @@ Funkcije se izvršavaju u kontejnerima koji ne čuvaju stanje i koji su aktivni 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{Slika 7.png}
-  \caption{Procesni model FaaS\newline[preuzeto sa sajta https://www.alibabacloud.com]}
+  \caption{Procesni model FaaS\\\footnotesize[preuzeto sa sajta https://www.alibabacloud.com]}
   \label{fig:faasProcesniModel}
 \end{figure}
 
 
-Procesni model funkcije kao servis se sastoji od kontorlera funkcija (engl. Function controller), izvor događaja (engl. Event sources), instanci funkcija (engl. Function instances). Na slici se može videti procesni model FaaS\ref{fig:faasProcesniModel}. Kontroler funkcija upravlja instancama funkcija, kontroliše skaliranje instanci i izvor događaja. Izvor događaja okida funkciju iz instanci funkcija na neki događaj, npr na HTTP poziv. Funkcije dalje mogu da se izvršavaju sinhrono i asinhrono. U slučaju asinhronog izvršavanja platforma će vratiti identifikator koji se može koristi za kasniju proveru stanja funkcije \cite{sah}. Prilikom dizajniranja funkcija potrebno je pratiti princip minimalne odgovornosti (engl. single responsibility principle), što označava da funkcija treba da ima jedan zadatak koji obavlja. Funkcije je potrebno dizajnirati da budu idempotentne, što znači da višestruki pozivi iste funkcije daju iste rezultate. Da bi se obezbedila redudantnost i visoka dostupnost, funkcija može biti pozvana više od jednog puta \cite{sah}.
+Procesni model funkcije kao servis se sastoji od kontorlera funkcija (engl. Function controller), izvor događaja (engl. Event sources), instanci funkcija (engl. Function instances). Na Slici \ref{fig:faasProcesniModel} se može videti procesni model FaaS. Kontroler funkcija upravlja instancama funkcija, kontroliše skaliranje instanci i izvor događaja. Izvor događaja okida funkciju iz instanci funkcija na neki događaj, npr na HTTP poziv. Funkcije dalje mogu da se izvršavaju sinhrono i asinhrono. U slučaju asinhronog izvršavanja platforma će vratiti identifikator koji se može koristi za kasniju proveru stanja funkcije \cite{sah}. Prilikom dizajniranja funkcija potrebno je pratiti princip minimalne odgovornosti (engl. single responsibility principle), što označava da funkcija treba da ima jedan zadatak koji obavlja. Funkcije je potrebno dizajnirati da budu idempotentne, što znači da višestruki pozivi iste funkcije daju iste rezultate. Da bi se obezbedila redudantnost i visoka dostupnost, funkcija može biti pozvana više od jednog puta \cite{sah}.
 
 \section{Prednosti računarstva bez servera}
 
@@ -282,11 +298,11 @@ Brzo isporučivanje koda na produkciono okruženje. Vreme isporučivanja rešenj
 
 \section{Mane računarstva bez servera}
 
-Bojazan premeštanja podataka u javni oblak. Računarstvo bez servera predstavlja težnju da se više odgovornosti prebaci na stranu pružaoca usluga. Postoje slučajevi kada je potrebno da infrastruktura i podaci ostanu u centru podataka klijenta. U tom slučaju ne može se koristiti arhitektura bez servera\cite{sa}.
+Bojazan premeštanja podataka u javni oblak. Računarstvo bez servera predstavlja težnju da se više odgovornosti prebaci na stranu pružaoca usluga. Postoje slučajevi kada je potrebno da infrastruktura i podaci ostanu u centru podataka klijenta. U tom slučaju ne može se koristiti arhitektura bez servera \cite{sa}.
 
 Potreba da se infrastruktura uredi na poseban način i da se sa njom upravlja. Na primer, AWS omogućava samo konfigurisanje količine ram memorije koja će biti dostupna funkciji i pruža mogućnost da se konfigurišu vrednosti tajmauta (engl. timeout). % kako prevesti timeout?
 
-Servis mora da zadovolji nivo performansi i dostupnosti. Pružaoci usluga garantuju da će usluga biti dostupna u određenom procentu, ukoliko to nije dovoljno potrebno je dizajnirati posebno rešenje koje će zadovoljiti taj nivo. Takođe pruzaoci usluga ne garantuju nivo performansi pa je to potrebno izračunati\cite{sa}.
+Servis mora da zadovolji nivo performansi i dostupnosti. Pružaoci usluga garantuju da će usluga biti dostupna u određenom procentu, ukoliko to nije dovoljno potrebno je dizajnirati posebno rešenje koje će zadovoljiti taj nivo. Takođe pružaoci usluga ne garantuju nivo performansi pa je to potrebno izračunati \cite{sa}.
 
 Zaključavanje kod pružaoca usluga (engl. vendor-locking). Ukoliko postoji potreba da arhitektura ostane nezavisna od pružaoca usluga (engl. cloud agnostic). Postoji mogućnost da se vremenom razvije jaka zavisnost od ostalih servisa koje pružalac usluga pruža. Potrebno je razmotriti koje sve servise sistem treba da koristi.
  
@@ -307,23 +323,23 @@ Arhitektura bez servera se može koristiti za implementaciju IoT (engl. Internet
 Može se koristiti za obradu, konverziju, manipulaciju podataka. Neki od primera su obrada CSV, JSON i XML datoteka, promena formata, obrada slika. Može se konfigurisati sistem da reaguje na događaje poput prijema slike, zatim sistem izvršava promenu formata slike u adekvatan format.
 
 \subsection{Analiza podataka uživo}
-Upliv (engl. ingestion) velike količine podataka poput podataka iz dnevnika (engl. log), transakcija, sistemskih događaja i aktivnosti korisnika može se obaviti servisima poput Amazon Kinesis Data Streams i Amazon Kinesis Firehose. Kao što se može videti na slici\ref{fig:AnalizaPodataka}, AWS Lambda servis se može koristiti da obradi podatke pre nego što se oni proslede servisima za skladištenje podataka poput S3 i Amazon DynamoDb.
+Upliv (engl. ingestion) velike količine podataka poput podataka iz dnevnika (engl. log), transakcija, sistemskih događaja i aktivnosti korisnika može se obaviti servisima poput Amazon Kinesis Data Streams i Amazon Kinesis Firehose. Kao što se može videti na Slici \ref{fig:AnalizaPodataka}, AWS Lambda servis se može koristiti da obradi podatke pre nego što se oni proslede servisima za skladištenje podataka poput S3 i Amazon DynamoDb.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\textwidth]{Slika 8.png}
-  \caption{Primer upotrebe AWS Lambda servisa za analizu podataka uživo\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe Lambda servisa za analizu podataka uživo\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:AnalizaPodataka}
 \end{figure}
 
 \subsection{Posrednik ka starom interfejsu} % Kako ovo prevesti Legacy API proxy
 
-Programeri mogu da koriste Amazonove servise poput Amazon API Gateway servisa i Amazon Lambda servisa kako bi napravili međusloj između koji može da vrši obradu zahteva i njihovu konverziju u format koji je čitljiv za servise iza AWS Lambda servisa. Ovaj pristup omogućava da moderne aplikacija koriste starije servise koji koriste zastarele protokole i formate podataka. Na slici\ref{fig:KonverzijaPodataka} se može videti primer takve arhitekture.
+Programeri mogu da koriste Amazonove servise poput Amazon API Gateway servisa i Amazon Lambda servisa kako bi napravili međusloj između koji može da vrši obradu zahteva i njihovu konverziju u format koji je čitljiv za servise iza AWS Lambda servisa. Ovaj pristup omogućava da moderne aplikacija koriste starije servise koji koriste zastarele protokole i formate podataka. Na Slici \ref{fig:KonverzijaPodataka} se može videti primer takve arhitekture.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{Slika 9.png}
-  \caption{Primer upotrebe AWS Lambda servisa za konverziju zahteva prema starijim servisima\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda servisa kao posrednika\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:KonverzijaPodataka}
 \end{figure}
 
@@ -338,18 +354,18 @@ Jedno od popularnih rešenja za primenu računarstva bez servera su bot servisi 
 
 \subsection{Hibridna rešenja}
 
-Hibridna rešenja predstavljaju kombinaciju nekog od predloženih rešenja i postojećeg sistema. Postojeći sistem se proširuje da sadrži komponente koje su razvijene arhitekturom bez servera i kao takve upotpunjuju funkcionalnosti postojećeg sistema. Na slici\ref{fig:HibridnoResenje} može se videti jedan primer takvog hibridnog rešenja koje je prošireno sa Lambda funkcijama koje obavljaju neke poslove koji nisu bili deo sistema.
+Hibridna rešenja predstavljaju kombinaciju nekog od predloženih rešenja i postojećeg sistema. Postojeći sistem se proširuje da sadrži komponente koje su razvijene arhitekturom bez servera i kao takve upotpunjuju funkcionalnosti postojećeg sistema. Na Slici \ref{fig:HibridnoResenje} može se videti jedan primer takvog hibridnog rešenja koje je prošireno sa Lambda funkcijama koje obavljaju neke poslove koji nisu bili deo sistema.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{Slika 10.png}
-  \caption{Primer upotrebe AWS Lambda servisa za kreiranje hibridnog rešenja\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda servisa za kreiranje hibridnog rešenja\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:HibridnoResenje}
 \end{figure}
 
 \section{Projektni uzorci}
 
-Projektni uzorci (engl. patterns) predstavljaju rešenja za neke česte problema u dizajnu softvera. Oni takođe olakšavaju komunikaciju između programera (engl. developers) softvera ukoliko su svi upoznati sa projektnim uzorkom, njegovim prednostima i manama. Uzorci predstavljeni u ovom delu su incijalno bili korišćeni za distribuirane sisteme. Kasnije sa razvojem arhitekture bez servera ovi uzorci su postali korisni za rešavanje problema prilikom dizajniranja softvera arhitekture bez servera\cite{sa}. U nastavnku se prikazani neki od popularnih projektnih uzoraka za računarstvo bez servera.
+Projektni uzorci (engl. patterns) predstavljaju rešenja za neke česte problema u dizajnu softvera. Oni takođe olakšavaju komunikaciju između programera (engl. developers) softvera ukoliko su svi upoznati sa projektnim uzorkom, njegovim prednostima i manama. Uzorci predstavljeni u ovom delu su incijalno bili korišćeni za distribuirane sisteme. Kasnije sa razvojem arhitekture bez servera ovi uzorci su postali korisni za rešavanje problema prilikom dizajniranja softvera arhitekture bez servera \cite{sa}. U nastavnku se prikazani neki od popularnih projektnih uzoraka za računarstvo bez servera.
 
 
 \subsection{Komanda}
@@ -358,40 +374,40 @@ Komanda projektni uzorak enkapsulira zahtev kao objekat što omogućuje parametr
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Slika 12.png}
-  \caption{Primer upotrebe AWS Lambda funkcije u komanda projektnom uzorku\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda funkcije u komanda projektnom uzorku\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:komanda}
 \end{figure}
  
-Na slici\ref{fig:komanda} se može videti primer sistema koji ima posebnu AWS Lambda funkciju koja kontroliše i poziva ostale funkcije. Ona može biti prikljucena na ulaz (engl. gateway), pozvana ručno tako što joj se prosledi poruka koje funkcije da pozove. Komandna funkcija može da radi sa različitim verzijama klijenata.
+Na Slici \ref{fig:komanda} se može videti primer sistema koji ima posebnu AWS Lambda funkciju koja kontroliše i poziva ostale funkcije. Ona može biti prikljucena na ulaz (engl. gateway), pozvana ručno tako što joj se prosledi poruka koje funkcije da pozove. Komandna funkcija može da radi sa različitim verzijama klijenata.
 
 \subsection{Poruke uzorak} % Kako prevesti Messaging pattern?
 
-Poruke (engl. messaging) projektni uzorak omogućava programerima da naprave skalabilan i robusan sistem tako što se uklanjaju zavisnosti funkcija i servisa kao i skladištenje zahteva ili događaja u niz. Popularan je kod distribuiranih sistema \cite{sa}. Pouzdanost sistema poizilazi iz činjenice da servis može i da se zaustavi, sve dok su zahtevi sačuvani u nizu poruka, oni se kasnije mogu izvršiti kada se servis pokrene. Niz poruka se koristi kao bafer koji prihvata zahteve čak i kada servis koji čita iz niza ne radi. Klijent šalje zahtev koji se upisuje u niz da bi kasnije servis čitao zahteve iz samog niza. U zavisnosti kako je niz poruka konfigurisan, niz može imati više klijenata koji upisuju zahteve i više servisa koji čitaju zahteve iz niza. Na slici\ref{fig:poruke} se može videti primer impelmentacije uzorka.
+Poruke (engl. messaging) projektni uzorak omogućava programerima da naprave skalabilan i robusan sistem tako što se uklanjaju zavisnosti funkcija i servisa kao i skladištenje zahteva ili događaja u niz. Popularan je kod distribuiranih sistema \cite{sa}. Pouzdanost sistema poizilazi iz činjenice da servis može i da se zaustavi, sve dok su zahtevi sačuvani u nizu poruka, oni se kasnije mogu izvršiti kada se servis pokrene. Niz poruka se koristi kao bafer koji prihvata zahteve čak i kada servis koji čita iz niza ne radi. Klijent šalje zahtev koji se upisuje u niz da bi kasnije servis čitao zahteve iz samog niza. U zavisnosti kako je niz poruka konfigurisan, niz može imati više klijenata koji upisuju zahteve i više servisa koji čitaju zahteve iz niza. Na Slici \ref{fig:poruke} se može videti primer impelmentacije uzorka.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Slika 13.png}
-  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku sa porukama\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku sa porukama\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:poruke}
 \end{figure}
  
 \subsection{Nizovi sa prioritetom}
-Nizovi sa prioritetom su projektni obrazac koji se koristi ukoliko postoji potreba za različitim nivoi kontole ili prioriteta. Uvođenjem dodatnih nizova postiže se da različiti nizovi mogu da se obrađuju na različrite načine. Uvođenjem prioritetnih nizova postiže se da neki zahtevi mogu da se obrade pre drugih sa manjim prioritetom. Na slici\ref{fig:nizovi} može se videti primer arhitekture sa više nizova sa različitim prioritetima.
+Nizovi sa prioritetom su projektni obrazac koji se koristi ukoliko postoji potreba za različitim nivoi kontole ili prioriteta. Uvođenjem dodatnih nizova postiže se da različiti nizovi mogu da se obrađuju na različrite načine. Uvođenjem prioritetnih nizova postiže se da neki zahtevi mogu da se obrade pre drugih sa manjim prioritetom. Na Slici \ref{fig:nizovi} može se videti primer arhitekture sa više nizova sa različitim prioritetima.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Slika 14.png}
-  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku sa prioritetnim nizovima\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku sa prioritetnim nizovima\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:nizovi}
 \end{figure}
  
 \subsection{Grananje uzorak} % Kako ovo prevesti, fan-out?
-Grananje (engl.fan-out) projektni uzorak se koristi da prosleđivanje obaveštenja i poruka svim klijentima koji slušaju ili su prijavljeni na niz za obaveštavanje (engl. messaging queue). Na AWS platformi ovaj uzorak se implementira tako što se koristi AWS SNS (engl. Simple Notification Service) tema (engl. topic) koja omogućava da se više korisnika obavesti kada se nova poruka objavi na datu temu. Još jedan primer sa AWS platforme, kada se novi fajl doda na AWS S3 servis, može se aktivirati Lambda funkcija. Za slučaj da je potrebno pozvati više funkcija, originalna AWS Lambda funkcija se može modifikovati tako da ona izvrši pozive ka odgovarajućim Lambda funkcijama, kao što je slučaj kod komanda projektnog uzorka. Ipak to zahteva više posla pa se preporučuje da se koristi AWS SNS servis koji bi pozivao funkcija u paraleli, kao što može da se vidi na slici\ref{fig:grananje}. AWS SNS teme predstavljaju komunikacione kanale koje mogu imati više izvora poruka (engl publishers) i više primalaca (engl. subscribers) koji mogu biti AWS Lambda funkcije. Kada je nova poruka objavi, AWS SNS poziva sve AWS Lambda funkcije u paraleli.
+Grananje (engl.fan-out) projektni uzorak se koristi da prosleđivanje obaveštenja i poruka svim klijentima koji slušaju ili su prijavljeni na niz za obaveštavanje (engl. messaging queue). Na AWS platformi ovaj uzorak se implementira tako što se koristi AWS SNS (engl. Simple Notification Service) tema (engl. topic) koja omogućava da se više korisnika obavesti kada se nova poruka objavi na datu temu. Još jedan primer sa AWS platforme, kada se novi fajl doda na AWS S3 servis, može se aktivirati Lambda funkcija. Za slučaj da je potrebno pozvati više funkcija, originalna AWS Lambda funkcija se može modifikovati tako da ona izvrši pozive ka odgovarajućim Lambda funkcijama, kao što je slučaj kod komanda projektnog uzorka. Ipak to zahteva više posla pa se preporučuje da se koristi AWS SNS servis koji bi pozivao funkcija u paraleli, kao što može da se vidi na Slici \ref{fig:grananje}. AWS SNS teme predstavljaju komunikacione kanale koje mogu imati više izvora poruka (engl publishers) i više primalaca (engl. subscribers) koji mogu biti AWS Lambda funkcije. Kada je nova poruka objavi, AWS SNS poziva sve AWS Lambda funkcije u paraleli.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Slika 15.png}
-  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku grananje\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda funkcije u projektnom uzorku grananje\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:grananje}
 \end{figure}
 
@@ -400,14 +416,13 @@ Računarstvo kao lepak (engl. compute as glue) je projektni uzorak koji pokazuje
  
 \subsection{Tokovi i filteri uzorak}
 % Kako prevesti pipeline?
-Cilj ovog projektnog uzorka je razbijanje kompleksnih procesa u niz manjih servisa organizovanih u proces obrade (engl.pipeline). Komponente koje su dizajnirane da transformišu podatke se nazivaju filteri (engl. filters). Konektori koji prosleđuju podatke od jedne komponente do druge se nazivaju tokovi (engl. pipes). Preporučljivo je da svaka Lambda funkcija bude granularan servis sa jednim zaduženjem. Funkcija treba da ima jasan ulaz i izlaz sa jednostavnim interfejsom. To omogućava bolju iskorišćenost Lambda funkcija kako je one mogu koristiti u više slučajeva. Na slici\ref{fig:grananje} se može videti primer upotrebe AWS lambda funkcija.
+Cilj ovog projektnog uzorka je razbijanje kompleksnih procesa u niz manjih servisa organizovanih u proces obrade (engl.pipeline). Komponente koje su dizajnirane da transformišu podatke se nazivaju filteri (engl. filters). Konektori koji prosleđuju podatke od jedne komponente do druge se nazivaju tokovi (engl. pipes). Preporučljivo je da svaka Lambda funkcija bude granularan servis sa jednim zaduženjem. Funkcija treba da ima jasan ulaz i izlaz sa jednostavnim interfejsom. To omogućava bolju iskorišćenost Lambda funkcija kako je one mogu koristiti u više slučajeva. Na Slici \ref{fig:pipeline} se može videti primer upotrebe AWS lambda funkcija.
 
 % treba li mi ova slika?
-\footnote{Slika je preuzeta iz knjige Serverless Architectures on AWS}\ref{fig:pipeline}
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Slika 16.png}
-  \caption{Primer upotrebe AWS Lambda funkcije prilikom izrade kompleksnih sistema za obradu podataka\newline[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
+  \caption{Primer upotrebe AWS Lambda funkcije prilikom izrade kompleksnih sistema za obradu podataka\\\footnotesize[preuzeto iz knjige Serverless architectures on AWS, autora Peter Sbarski, Yan Cui i Ajay Nair]}
   \label{fig:pipeline}
 \end{figure}
 
@@ -427,9 +442,8 @@ Serverles (engl. Serverless) je radni okvir koji omogućava razvoj, isporuku kod
  
 Kod aplikacije zasnovane na arhitekturi bez servera je isporučen i izvršava se na AWS Lambda funkcijama. Svaka funkcija je nezavisna celina, koja se izvršava nezavisno od ostalih funkcija. Svaka funkcija treba da ima samo jedno zaduženje. Sve funkcije moraju biti definisane u serverless.yml fajlu u sekciji \emph{functions}. Prilikom definisanja funkcije potrebno je definisati njen naziv parametrom \emph{name} i kog rukovodioca funkcija koristi parametrom \emph{handler}. Rukovodilac funkcije je zapravo deo koda koji se poziva kada se pozove funkcija. Pored toga postoje i opcioni parametri koji se mogu definisati. Može se zadati opis funkcije parametrom \emph{description}, zatim može se zadati u kom okruženju se funkcija izvršava parametrom \emph{runtime}. Ne postoji mogućnost zadavanja jačine procesorske snage već se zadaje memorija koja se stavlja na raspolaganje funkciji. Memorija se zadaje u megabajtima ili MB i podrazumevana veličina je 1024. Što više memorije funkcija ima, ima i više procesorske snage. Ukoliko funkcija treba da interaguje sa nekim drugim servisom, npr sa bazom podataka, mora posedovati odgovarajuću IAM ulogu (engl. role). Uloga se zadaje pod parametrom \emph{provider.iam.role.statements} i razlikuje se u zavisnosti kom servisu za bazu podataka treba da pristupa. Moguće je jos konfigurisati oznake (engl. tags), podešavanja virtuelnog privatnog oblaka, verzionisanja, podešavanja autorizacije i tako dalje.
 
-
-\begin{center}Primer definisanja funkcije u serverles radnom okviru\end{center}
-\begin{lstlisting}
+% captionpos=b za dole
+\begin{lstlisting}[caption={Primer definisanja funkcije u serverles radnom okviru},captionpos=t]
 list:
   handler: functions/bikes/list.listBikes
   events:
@@ -447,19 +461,19 @@ Događaji su objekti zbog koji se pokreće funkcija. Svaka funkcija ima precizno
  
 Servisi predstavljaju organizacione jedinice u serverles radnom okviru. Servis je konfigurisan u serverless.yml fajlu gde su definisane i funkcije, događaji koji ih okidaju kao i ostali resursi koji se koriste. Kako aplikacija raste, preporučljivo je da se formira više servisa u skladu sa funkcionalnostima \cite{sfs}. Od verzije 3.15.0, moguće je korišćenje više servisa, paralelno i sekvencijalno isporučivanje koda (engl. deployment). Uveden je i novi fajl serverless-compose.yml u kome se nalaze konfiguracije kompozitnih servisa.
  
-Resursi predstavljaju sve infrastrukturne resurse koji su neophodni funkcijama. Na primer ukoliko funkcija čuva rezultat u bazi podataka, onda je on definisana kao resurs. Resursi se definišu parametrom \emph{resources} i u slučaju AWS pruzaoca usluga, koristi se sintaksa CloudFormation šablona (engl. template).
+Resursi predstavljaju sve infrastrukturne resurse koji su neophodni funkcijama. Na primer ukoliko funkcija čuva rezultat u bazi podataka, onda je on definisana kao resurs. Resursi se definišu parametrom \emph{resources} i u slučaju AWS pružaoca usluga, koristi se sintaksa CloudFormation šablona (engl. template).
 
 
 \chapter{Veb servis na arhitekturi bez servera za iznajmljivanje bicikala}
  
-U ovom poglavlju je predstavljena implementacija servisa zasnovanog na arhitekturi bez servera i na AWS Lambda platformi. U prvom delu poglavlja je predstavljena arhitektura servisa, zatim je objašnjen proces kreiranja resursa u oblaku i isporučivanja koda. U poslednjem delu poglavlja se prolazi kroz korišćene AWS servise. Servis je isporučen i javno dostupan na AWS platformi korišćenjem pogodnosti besplatnog (engl. free-tier) naloga. Servis je razvijen kao projekat otvorenog koda i celokupan je javno dostupan na adresi https://github.com/Vojkan-Cvijovic/Rent-A-Bike. Za razvoj servisa korišćen je programski jezik JavaScript i radni okvir Node.js 14. Za razvojno okruženje je korišćen WebStorm koji je razvijen od strane JetBrains kompanije.
+U ovom poglavlju je predstavljena implementacija servisa zasnovanog na arhitekturi bez servera i na AWS Lambda platformi. U prvom delu poglavlja je predstavljena arhitektura servisa, zatim je objašnjen proces kreiranja resursa u oblaku i isporučivanja koda. U poslednjem delu poglavlja se prolazi kroz korišćene AWS servise. Servis je isporučen i javno dostupan na AWS platformi korišćenjem pogodnosti besplatnog (engl. free-tier) naloga. Servis je razvijen kao projekat otvorenog koda i celokupan je javno dostupan na adresi \url{https://github.com/Vojkan-Cvijovic/Rent-A-Bike}. Za razvoj servisa korišćen je programski jezik JavaScript i radni okvir Node.js 14. Za razvojno okruženje je korišćen WebStorm koji je razvijen od strane JetBrains kompanije.
 
 
 \section{Arhitektura servisa}
 
 Veb servis je zamiljen kao zadnji deo (engl. backend) aplikacije za iznajmljivanje bicikala. Korisnik preko aplikacije može da odabere i rezerviše biciklu dok servis treba da omogući izvršavanje zadatih operacija i čuvanje rezultata tih operacija. Za razvoj servisa je odabrana arhitektura bez servera kako se sistem sastoji od više jednostavnih operacija koje mogu predstavljati funkcije sistema i kako se očekuje promenljiv intenzitet dolaznog saobraćaja. Očekuje se da dolazni zahtevi pristižu servisu samo u određenim delovima dana kao naprimer ujutru ili uveče dok tokom noći neće dolaziti ni jedan zahtev. Arhitektura bez servera najbolje zadovoljava zahteve prikazanog veb servisa.
 
-Servis omogućava korisnicima dohvatanje lokacija gde se bicikle nalaze zatim kreiranje, brisanje, dohvatanje svih bicikli, dohvatanje samo slobodnih bicikli, ažuriranje bicikli. Funkcionalnosti servisa se ostvaruju preko pojedinačnih funkcija. Svaka funkcija ima samo jedno zaduženje. Na primer funkcija za kreiranje bicikli, prihvata podatke poput proizvođača, godine proizvodnje, lokacije i vraća odgovor o uspešnosti izvršenja operacije. Funkcije su isporučene AWS Lambda servisu i za svaku funkciju je napravljen jedna Lambda funkcija. U podešavanjima funkcija je navedena na koji tip događaja se funkcija aktivira i koji rukovodilac se koristi. Sve funkcije se aktiviraju na neki oblik HTTP zahteva koji dolazi sa aplikativnog ulaza (engl. gateway). Kod HTTP zahteva razlikujemo putanju, promenljive iz putanje, tip zahteva. Rukovodioci (engl. handlers) funkcija su moduli koji su napisani u JavaScript programskom jeziku, svaki modul pripada samo jednoj funkciji. Servisu se pristupa preko aplikativnog ulaza. Za autentifikaciju i autorizaciju se koristi servis AWS Cognito. Kako AWS Lambda funkcije ne čuvaju stanje, sve promene na sistemu se upisuju u bazu podataka. Za bazu podataka servis koristi servis pod nazivom AWS DynamoDB, koji nam omogućava da koristimo no-sql bazu podataka. Za upis u bazu podataka funkcije koriste \emph{aws-sdk}  biblioteku koja ima implementaciju klijenta za pristup bazi u okviru modula \emph{AWS.DynamoDB}. Dnevnik o funkcionisanju (engl. log) čuva servis pod nazivom AWS CloudWatch koji nam omogućava grupisanje podataka po funkcijama i pretragu za zadato vreme. Na slici\ref{fig:awsArchitecture} se može videti skica AWS arhitekture servisa.
+Servis omogućava korisnicima dohvatanje lokacija gde se bicikle nalaze zatim kreiranje, brisanje, dohvatanje svih bicikli, dohvatanje samo slobodnih bicikli, ažuriranje bicikli. Funkcionalnosti servisa se ostvaruju preko pojedinačnih funkcija. Svaka funkcija ima samo jedno zaduženje. Na primer funkcija za kreiranje bicikli, prihvata podatke poput proizvođača, godine proizvodnje, lokacije i vraća odgovor o uspešnosti izvršenja operacije. Funkcije su isporučene AWS Lambda servisu i za svaku funkciju je napravljen jedna Lambda funkcija. U podešavanjima funkcija je navedena na koji tip događaja se funkcija aktivira i koji rukovodilac se koristi. Sve funkcije se aktiviraju na neki oblik HTTP zahteva koji dolazi sa aplikativnog ulaza (engl. gateway). Kod HTTP zahteva razlikujemo putanju, promenljive iz putanje, tip zahteva. Rukovodioci (engl. handlers) funkcija su moduli koji su napisani u JavaScript programskom jeziku, svaki modul pripada samo jednoj funkciji. Servisu se pristupa preko aplikativnog ulaza. Za autentifikaciju i autorizaciju se koristi servis AWS Cognito. Kako AWS Lambda funkcije ne čuvaju stanje, sve promene na sistemu se upisuju u bazu podataka. Za bazu podataka servis koristi servis pod nazivom AWS DynamoDB, koji nam omogućava da koristimo no-sql bazu podataka. Za upis u bazu podataka funkcije koriste \emph{aws-sdk}  biblioteku koja ima implementaciju klijenta za pristup bazi u okviru modula \emph{AWS.DynamoDB}. Dnevnik o funkcionisanju (engl. log) čuva servis pod nazivom AWS CloudWatch koji nam omogućava grupisanje podataka po funkcijama i pretragu za zadato vreme. Na Slici \ref{fig:awsArchitecture} se može videti skica AWS arhitekture servisa.
 
 \begin{figure}[!ht]
   \centering
@@ -514,8 +528,7 @@ U ovom poglavlju su definisane sve funkcije koje su razvijene kao deo servisa. S
 
 U nastavku rada je prikazana implementacija funkcije za kreiranje bicikli. Funkcija prima proizvođača bicikle, godinu proizvodnje, lokaciju na kojoj će bicikla biti dodata kao i status bicikle. Funkcija koristi \emph{uuid} biblioteku za generisanje identifikatora bicikle. U zavisnosti od uspešnosti operacije, funkcija vraća odgovarajuću poruku korisniku.
 
-\begin{center}Primer implementacije funkcije za kreiranje bicikala\end{center}
-\begin{lstlisting}
+\begin{lstlisting}[caption={Primer implementacije funkcije za kreiranje bicikala},captionpos=t]
 module.exports.createBike = async event => {
   const body = JSON.parse(event.body);
   const id = uuid.v1();
@@ -557,13 +570,13 @@ Isporučivanje (engl. deployment) koda Lambda funkciji se vrši preko paketa isp
   \item Slika kontejnera (engl. container image). Slika mora da bude kompatibilna sa specifikaciom OCI (engl. Open Container Initiative). Ona mora da sadrži kôd, sve zavisnosti, operativni sistem i okruženje u kome će kôd biti pokrenut.
 \end{enumerate}
  
-Lambda automatski pokreće dodatne instance funkcije u slučaju da je funkcija pozvana pre nego sto je tekuća funkcija završila. Kada se protok saobraćaja smanji, Lambda servis zaustavlja ili uklanja trenutne instance. Plaća se samo vreme koje je bilo potrebno funkciji da se inicijalizuje i da obradi zahtev. Lambda servis ima dva limita skaliranja, limit konkurentnosti i limit naletne konkuretnosti (engl. burst concurrency). Oba limita se ne primenjuju na konkretnu Lambda funkciju već obuhvataju sve Lambda funkcije u regionu korisnika. Limit konkurentnosti je od 1000, dok je limit naletne konkuretnosti od 500 i oba zavise od regiona. Posle inicijalnog naleta zahteva, nakon što imamo 500 funkcija da rade paralelno, broj novih paralelnih funkcija se može povećati za 500 po minutu i nastavlja dok ne dostigne limit konkurentnosti. Prema tome kao što se može videti na slici \ref{fig:awsLambdaSkaliranje}, Lambda servis nam garantuje određenu količinu instanci čiji broj se uvećava ekponencijalno dok posle tog limita, broj instanci funkcija raste linearno. Ukoliko zahtevi dolaze brže nego sto broj funkcija može da raste ili je maksimalan broj funkcija iskorišćen, ti zahtevi će pasti sa status kodom 429. Za slučaj da se kôd na funkcijama sporo inicijalizuje, Lambda servis podržava konfigurisanje broja funkcija koje će uvek biti dostupne. Time ste postiže da imamo određenu količinu funkcija koje mogu odmah da odgovore na zahteve.
+Lambda automatski pokreće dodatne instance funkcije u slučaju da je funkcija pozvana pre nego sto je tekuća funkcija završila. Kada se protok saobraćaja smanji, Lambda servis zaustavlja ili uklanja trenutne instance. Plaća se samo vreme koje je bilo potrebno funkciji da se inicijalizuje i da obradi zahtev. Lambda servis ima dva limita skaliranja, limit konkurentnosti i limit naletne konkuretnosti (engl. burst concurrency). Oba limita se ne primenjuju na konkretnu Lambda funkciju već obuhvataju sve Lambda funkcije u regionu korisnika. Limit konkurentnosti je od 1000, dok je limit naletne konkuretnosti od 500 i oba zavise od regiona. Posle inicijalnog naleta zahteva, nakon što imamo 500 funkcija da rade paralelno, broj novih paralelnih funkcija se može povećati za 500 po minutu i nastavlja dok ne dostigne limit konkurentnosti. Prema tome kao što se može videti na Slici \ref{fig:awsLambdaSkaliranje}, Lambda servis nam garantuje određenu količinu instanci čiji broj se uvećava ekponencijalno dok posle tog limita, broj instanci funkcija raste linearno. Ukoliko zahtevi dolaze brže nego sto broj funkcija može da raste ili je maksimalan broj funkcija iskorišćen, ti zahtevi će pasti sa status kodom 429. Za slučaj da se kôd na funkcijama sporo inicijalizuje, Lambda servis podržava konfigurisanje broja funkcija koje će uvek biti dostupne. Time ste postiže da imamo određenu količinu funkcija koje mogu odmah da odgovore na zahteve.
  
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.7\textwidth]{AWS-Lambda-skaliranje.png}
-  \caption{Grafikon skaliranja Lambda funkcija\newline[preuzeto sa sajta https://docs.aws.amazon.com/lambda/latest/dg/invocation-scaling.html]}
+  \caption{Grafikon skaliranja Lambda funkcija\\\footnotesize[preuzeto sa sajta https://docs.aws.amazon.com/lambda/latest/dg/invocation-scaling.html]}
   \label{fig:awsLambdaSkaliranje}
 \end{figure}
  
@@ -573,13 +586,13 @@ Lambda servis podržava podelu koda u biblioteke. Lambda sloj (engl. layer) omog
 Da bi se kontrolisala prava pristupa funkcije ostalim AWS servisima, svakoj Lambda funkciji je dodeljena posebna IAM uloga (engl. role) za izvršavanje. Ovoj ulozi je moguće dodati polisu koja definiše prava pristupa određenim AWS servisima i resursima. Ukoliko Lambda funkcija poziva druge servise iz koda putem AWS biblioteke, potrebno je proširiti ovu polisu da bi omogućili funkciji da izvrši zahtev. Preporučljivo je pratiti princip minimalnog pristupa prilikom izrade polisa, što znači Lambda funkciji dozvoliti da izvršava samo servise koji su joj neophodni. 
 
  
-Lambda servis pokreće funkcije u bezbednom i izolovanom okruženju za izršavanje (engl. execution environment). Okruženje upravlja resursima potrebnim za izvršavanje i životnim ciklusom (engl. lifecycle) okruženja za izršavanje funkcije. Životni ciklus okruženja se deli na faze inicijalizacije (engl. Init), pozivanja (engl. invoke) i zaustavljanja (engl. shutdown) što se može videti na slici \ref{fig:awsLambdaZivotniVek}. U fazi inicijalizacije, Lambda servis kreira ili startuje okruženje sa konfigurisanim resursima, pribavlja kôd za funkciju i sve Lambda slojeve (engl. layers), inicijalizuje ekstenzije i radni okvir, zatim poziva kôd za incijalizaciju funkcije. Ovaj redosled osigurava da je radno okruženje spremno za izvršavanje koda funkcije. U fazi izvršavanja, Lambda servis poziva rukovodioca funkcije koji je postavljen kada je funkcija napravljena. Nakon što se završi izvršavanje funkcije, Lambda servis zamrzava okruženje funkcije. Faza zaustavljanja se poziva ukoliko Lambda funkcija nije pozivana određeno vreme. U ovoj fazi Lambda servis zaustavlja radno okruženje, obaveštava sve ekstenzije da se zaustavlja i na kraju uklanja radno okruženje. Kod Lambda funkcije razlikujemo takozvani hladni start (engl. cold start) i topli start (engl. warm start). Kod hladnog starta ne postoji okruženje za izvršavanje pa Lambda izvršava sve korake incijalizacije okruženja zatim se startuje funkcija. Dok kod toplog starta, već postoji okruženje ali je ono zamrznuto pa se izvršava samo inicijalizacija funkcije i zatim startovanje funkcije. Pojava hladnog starta uvodi dodatno kasnjenje u sistem. 
+Lambda servis pokreće funkcije u bezbednom i izolovanom okruženju za izršavanje (engl. execution environment). Okruženje upravlja resursima potrebnim za izvršavanje i životnim ciklusom (engl. lifecycle) okruženja za izršavanje funkcije. Životni ciklus okruženja se deli na faze inicijalizacije (engl. Init), pozivanja (engl. invoke) i zaustavljanja (engl. shutdown) što se može videti na Slici \ref{fig:awsLambdaZivotniVek}. U fazi inicijalizacije, Lambda servis kreira ili startuje okruženje sa konfigurisanim resursima, pribavlja kôd za funkciju i sve Lambda slojeve (engl. layers), inicijalizuje ekstenzije i radni okvir, zatim poziva kôd za incijalizaciju funkcije. Ovaj redosled osigurava da je radno okruženje spremno za izvršavanje koda funkcije. U fazi izvršavanja, Lambda servis poziva rukovodioca funkcije koji je postavljen kada je funkcija napravljena. Nakon što se završi izvršavanje funkcije, Lambda servis zamrzava okruženje funkcije. Faza zaustavljanja se poziva ukoliko Lambda funkcija nije pozivana određeno vreme. U ovoj fazi Lambda servis zaustavlja radno okruženje, obaveštava sve ekstenzije da se zaustavlja i na kraju uklanja radno okruženje. Kod Lambda funkcije razlikujemo takozvani hladni start (engl. cold start) i topli start (engl. warm start). Kod hladnog starta ne postoji okruženje za izvršavanje pa Lambda izvršava sve korake incijalizacije okruženja zatim se startuje funkcija. Dok kod toplog starta, već postoji okruženje ali je ono zamrznuto pa se izvršava samo inicijalizacija funkcije i zatim startovanje funkcije. Pojava hladnog starta uvodi dodatno kasnjenje u sistem. 
  
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\textwidth]{AWS-Lambda-zivotnivek.png}
-  \caption{Životni vek Lambda funkcije\newline[preuzeto sa sajta https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html]}
+  \caption{Životni vek Lambda funkcije\\\footnotesize[preuzeto sa sajta https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html]}
   \label{fig:awsLambdaZivotniVek}
 \end{figure}
  
@@ -615,12 +628,12 @@ Amazon Cognito pruža usluge autentifikacije i autorizacije. Korisnik može da n
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{ProcesAutentifikacije.png}
-  \caption{Proces autentifikacije kada se koriste grupe korisnika i grupe identiteta\newline[preuzeto sa sajta https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html]}
+  \caption{Proces autentifikacije kada se koriste grupe korisnika i grupe identiteta\\\footnotesize[preuzeto sa sajta https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html]}
   \label{fig:procesAutentifikacije}
 \end{figure}
 
 % da li da se navodi u listi?
-Kao što se može videti na slici \ref{fig:procesAutentifikacije}, proces autentifikacije se može podeliti na 3 koraka:
+Kao što se može videti na Slici \ref{fig:procesAutentifikacije}, proces autentifikacije se može podeliti na 3 koraka:
 \begin{enumerate}
   \item Korisnik se uloguje sa kredencijalima na grupu korisnika, u slučaju uspešne autentifikacije u odgovoru dobija tokene.
   \item Korisnik prosleđuje tokene koje je dobio u prvom koraku i za uzvrat dobija privremene AWS kredencijale.
@@ -648,8 +661,7 @@ Kotlin je slican Javi, pa je i samim tim veliki broj koncepata preuzet iz Jave. 
 \subsubsection{Struktura}
 Specifikacija paketa treba da bude zadata na pocetku fajla i navodi se kljucnom rečju \emph{package}. Uključivanje dodatnih paketa se postiže na isti način kao u Javi, sa ključnom rečju \emph{import}. Kljucna rec za definiciju funkcije je \emph{fun}. Kotlin programskom jeziku mora da ima funkciju main i ona ne mora imati argumente. 
  
-\begin{center} Primer 1: Struktura Kotlin dokumenta\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Struktura Kotlin dokumenta},captionpos=t, language=Java]
 package demo.app
  
 import kotlin.text.*
@@ -662,8 +674,7 @@ fun main() {
 \subsubsection{Promenljive}
 U Kotlin programskom jeziku postoje dva tipa promenljivih a to su promenljive i konstante. Za promenljive se koristi ključna reč \emph{var} i njihova vrednost može da se promeni nakon dodele. Za konstante se koristi ključna reč \emph{val} i jednom kada dodelimo vrednost ne može se promeniti. Kotlin ne zahteva eksplicitno navođenje tipa svake promenljive i u stanju je da to zaključi u vreme kompajliranja iz izraza sa kojim vršimo dodelu vrednosti.
 
-\begin{center} Primer 2: Promenljive\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Promenljive},captionpos=t, language=Java]
 val constant = 2.71828
 var i = 0
  
@@ -678,12 +689,11 @@ Funkcije u Kotlin jeziku se navode koristeći ključnu reč \emph{fun}. Parametr
  
 U Kotlinu ključna reč \emph{if} se koristi kao izraz izračunavanja nekog uslova. U Kotlinu ne postoji ternarni operator pošto if komanda vraća rezultat. Za razliku od jave koja ima \emph{switch} komandu, Kotlin ima \emph{when} komandu koja predstavlja naredbu višestrukog grananja.
 
-\begin{center} Primer 3: Naredbe grananja\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Naredbe grananja},captionpos=t, language=Java]
 var max = x
 if (x < y) max = y
  
-// if with else
+
 var max: Int
 if (x > y) {
     max = x
@@ -691,10 +701,8 @@ if (x > y) {
     max = y
 }
  
-// if as expression
 val max = if (x > y) x else y
  
-// when with default 
 when (x) {
     1 -> print("x == 1")
     2 -> print("x == 2")
@@ -708,8 +716,7 @@ when (x) {
 \subsubsection{Petlje}
 Osnovne petlje u Kotlinu su \emph{for}, \emph{while} i \emph{do-while} petlje. For petlja iterira koristeći iterator i ekvivalentna je \emph{foreach} pelji u JavaScript programskom jeziku. Razlika između \emph{while} i \emph{do-while} petlje je u tome što \emph{while} petlja proverava uslov pre izvršavanja bloka dok \emph{do-while} petlja prvo izvrši blok pa tek onda proverava uslov. Kotlin podržava tradicionalne \emph{break} i \emph{continue} operatore u petljama.
 
-\begin{center} Primer 4: Petlje u Kotlin jeziku\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Petlje u Kotlin jeziku},captionpos=t, language=Java]
 for (i in array.indices) {
     println(array[i])
 }
@@ -727,9 +734,8 @@ do {
 \subsubsection{Nula vrednosti}
 Kotlin pokušava da reši problem pristupanja nula (engl. null) vrednostima. Pristup članu instance koja ima nula vrednost proizvodi \emph{NullPointerException} izuzetak u Javi. U Kotlinu, svaka promenljiva je podrazumevano ne nula vrednost. Kako bi se dozvolilo da promenljiva sadrži nula vrednost, mora se to izričito naglasiti. To se postiže dodavanjem upitnika prilikom definisanja tipa promenljive. U sledećem primeru se može videti kako izgleda upravljanje nula vrednostima u Kotlin jeziku.
 
-\begin{center} Primer 5: Dodela nula vrednosti\end{center}
-\begin{lstlisting}[language=Java]
-var nonNullString: String = "abc" // Inicijalizacija ne nula vrednoscu
+\begin{lstlisting}[caption={Dodela nula vrednosti},captionpos=t, language=Java]
+var nonNullString: String = "e"   // Inicijalizacija ne nula vrednoscu
 nonNullString = null              // Greska u fazi kompajliranja
  
 var nullableStr: String? = "abc"  // String moze biti nula vrednost
@@ -740,8 +746,7 @@ val l = nullableStr.length        // Greska, vrednost moze biti nula
  
 Da bi se pristupilo vrednosti promenljive koja može biti nula, mora se ograditi naredbom grananja i proveriti vrednost. Drugi način je da se koristi operator \emph{?.} koji vraća vrednost ako promenljiva nije nula vrednost inače vraća nula vrednost. U nastavku se može videti na primeru.
  
-\begin{center} Primer 6: Upravljanje nula vrednostima\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Upravljanje nula vrednostima},captionpos=t, language=Java]
 var b: String?
 val l1 = if (b != null) b.length else -1  // prvi nacin
  
@@ -750,8 +755,7 @@ var l2 = b?.length                        // drugi nacin
  
 Kotlin je uveo i operator \emph{!!} koji izvršava proveru vrednosti promenljive. U slučaju da je vrednost nula, operator baca grešku. Operator pruža sigurnost da vrednost koja se dodeljuje promenljivoj neće imati nula vrednost.
  
-\begin{center} Primer 7: Koršćenje operatora !!\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Koršćenje operatora !!},captionpos=t, language=Java]
 var b: String?
 val l = b!!.length
 \end{lstlisting}
@@ -759,8 +763,7 @@ val l = b!!.length
 \subsubsection{Klasa}
 Klase u Kotlin jeziku se deklarišu koristeći ključnu reč \emph{class}. Klasa u kotlinu može da ima primarni konstruktor i jedan ili više sekundarnih konstruktora. Primarni konstruktor je deo zaglavlja klase i navodi se posle naziva klase sa svojim agrumentima. Primarni konstruktor ne može da ima u sebi kôd već kôd koji je potreban za inicijalizaciju se upisuje u inicjalizacioni blok i to se postiže ključnom rečju \emph{init}. Prilikom inicijalizacije instance, inicjalizacioni blokovi se izvršavaju u redosledu u kome su navedeni u telu klase. Parametri primarnog konstruktora se mogu koristiti iz inicjalizacionih blokova. Oni se takođe mogu koristiti prilikom inicijalizacije polja klase. Polja klase se odvajaju zapetama. 
  
-\begin{center} Primer 8: Klasa u Kotlin jeziku\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Klasa u Kotlin jeziku},captionpos=t, language=Java]
 class Person(val name: String) {
     val children: MutableList<Person> = mutableListOf()
     constructor(name: String, parent: Person) : this(name) {
@@ -781,8 +784,7 @@ Sekundarni konstruktori moraju imati prefix \emph{constructor}. Ukoliko klasa sa
 
 Za sve deklarisane argumente u primarnom konstruktoru u klasi podataka kompajler će generisati funkcije za proveru jednakosti (engl. equals()), funkciju za pristup svakom parametru \emph{componentN()} gde N predstavlja redni broj argumenta, izračunavanje heš koda (engl. hashCode()), funkciju za kopiranje (engl. copy()), funkciju za ispis polja kao nisku (engl. toString()) u specijalnom formatu. Razlog uvođenja klase podataka je smanjivanje koda koji mora da se napiše da bi se postigna neka funkcionalnost. U nastavku je prikazano definisanje klase u Javi kao i kako bi se ista ta klasa definisala u Kotlinu kao klasa podataka.
 
-\begin{center} Primer 9: Java klasa\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Java klasa},captionpos=t, language=Java]
   public final class User {
     private final String name;
     private final int age;
@@ -837,23 +839,22 @@ Za sve deklarisane argumente u primarnom konstruktoru u klasi podataka kompajler
 }
 \end{lstlisting}
 U nastavku se može videti primer iste klase u Kotlin programskom jeziku. Funkcionalnost ostaje ista dok je sintaksa konciznija.
-\begin{center} Primer 10: Kotlin klasa\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Kotlin klasa},captionpos=t, language=Java]
 data class User(val name: String = "", val age: Int = 0)
 \end{lstlisting}
 
 \section{Aplikacija}
-U ovom poglavlju je predstavljena android aplikacija koja je razvijena u cilju ilustracije opisanih tehnologija. Android aplikacija je napisana u programskom jeziku Kotlin i zahteva barem Android 11 operativni sistem ili neki noviji. Prvo su predstavljeni arhitektura aplikacije i opis biblioteke za komunikaciju sa servisom a zatim opis upotrebe aplikacije.
+U ovom poglavlju je predstavljena android aplikacija koja je razvijena u cilju ilustracije opisanih tehnologija. Android aplikacija je napisana u programskom jeziku Kotlin i zahteva barem Android 11 operativni sistem ili neki noviji. Prvo je predstavljen tok aktivnosti aplikacije i opis biblioteke za komunikaciju sa servisom a zatim opis upotrebe aplikacije.
  
-\subsection{Arhitektura aplikacije}
+\subsection{Tok aktivnosti}
  
-Aplikacija je sastavljena od aktivnosti i postoji tačan redosled kojim se aktivnosti mogu pokrenuti. Inicijalna aktivnost je stranica za prijavljivanje. U zavisnosti da li korisnik postoji, aplikacija može da pređe na aktivnost za registraciju ili da pristupi prijavljivanju korisnika. Ukoliko korisnik se korisnik uspesno prijavi na aplikaciju, u zavisnosti od da li spada u administratore ili ne, korisnik se može preusmeriti na aktivnosti za izlistavanje lokacija ili na administratorsku stranicu.
+Aplikacija je sastavljena od aktivnosti i postoji tačan redosled kojim se aktivnosti mogu pokrenuti. Inicijalna aktivnost je stranica za prijavljivanje. U zavisnosti da li korisnik postoji, aplikacija može da pređe na aktivnost za registraciju ili da pristupi prijavljivanju korisnika. Ukoliko korisnik se korisnik uspešno prijavi na aplikaciju, u zavisnosti od da li spada u administratore ili ne, korisnik se može preusmeriti na aktivnosti za izlistavanje lokacija ili na administratorsku stranicu.
  
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.8\textwidth]{Organizacija aktivnosti.png}
-  \caption{Arhitektura aplikacije}
-  \label{fig:arhitekturaApplikacije}
+  \caption{Dijagram toka aktivnosti aplikacije}
+  \label{fig:tokAktivnostiApplikacije}
 \end{figure}
  
 Za regularnog korisnika, početna aktivnost je stranica koja pokazuje lokacije gde postoje bicikle za iznajmljivanje. Sa te aktivnosti korisnik može da ide na aktivnost za odjavljivanje sa aplikacije ili da produži na aktivnost za prikazivanje bicikli. U slučaju da ode na aktivnost za odjavljivanje, korisnik se odjavljuje i vraća na stranicu za prijavljivanje. Ako korisnik produži na aktivnost za prikazivanje bicikli, odatle može da ide na dve aktivnosti, za iznajmljivanje bicikli ili na aktivnost za odjavljivanje. Kada jednom ode na aktivnost za iznajmljivanje bicikli, korisniku je omogućeno samo da se vrati na aktivnost za prikazivanje bicikli, nije ponuđeno da se korisnik odjavi sa aplikacije.
@@ -867,8 +868,7 @@ Sve aktivnosti su definisane u direktorijumu \emph{src/main/java/org/bikerent}. 
  
 Za potrebe demonstracije razvijen je javno dostupan REST servis koji se izvršava kod Amazon pružaoca usluga u regionu centralne evrope. U android aplikaciji koristimo biblioteku pod nazivom \emph{Retrofit}\footnote{izvorni kôd je dostupan https://square.github.io/retrofit/}. Retrofit je javno dostupna biblioteka koja olakšava pravljenje HTTP API poziva ka servisu. Biblioteka ima za cilj da se reši koda koji uvek mora da se napiše (engl. boilerplate code) kada se pravi API poziv. To se postiže tako što se HTTP aplikativni interfejs preslikava u interfejs u Kotlin programskom jeziku. Kao što se može videti u primeru, biblioteka se oslanja na anotacije za definisanje specifičnosti zahteva poput tela, parametara, tipa zahteva. Takođe biblioteka radi sa klasama podataka (engl. data class) čime se dodatno uprošćava korišćenje same biblioteke.
 
-\begin{center} Primer 11: Interfejs za izvršavanje GET API poziva\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Interfejs za izvršavanje GET API poziva},captionpos=t, language=Java]
 public interface GitHubService {
   @GET("users/{user}/repos")
   Call<List<Repo>> listRepos(@Path("user") String user);
@@ -877,8 +877,7 @@ public interface GitHubService {
 
 
 Retrofit biblioteka generiše instancu interfejsa koji je definisan u primeru iznad. Potrebno joj je proslediti putanju na kojoj se servis nalazi. Nad klijentom se dalje poziva metoda create kojoj se prosleđuje klasa od koje želimo da klijent napravi servis.
-\begin{center} Primer 12: Inicijalizacija Retrofit klijenta i primer korišćenja\end{center}
-\begin{lstlisting}[language=Java]
+\begin{lstlisting}[caption={Inicijalizacija Retrofit klijenta i primer korišćenja},captionpos=t, language=Java]
 Retrofit retrofit = new Retrofit.Builder()
   .baseUrl("https://api.github.com/")
   .build();
@@ -894,7 +893,7 @@ Biblioteka vraća objekat tipa Call od zadatog servisa. Call objekat može napra
  
 \subsubsection{Proces registracija i prijavljivanja korisnika}
  
-Kada kornisnik instalira aplikaciju od njega se zahteva da se uloguje na aplikaciju. Ukoliko korisnik nema nalog, postoji opcija da kroz aplikaciju napravi nalog. Kada odabere da napravi nalog, korisniku se otvara sledeći prozor\ref{fig:registracijaKorisnika} u kome mu se trazi da unese podatke o email adresi i šifri. Potrebno je da korisnik prosledi validnu email adresu. Aplikacija poseduje i validaciju email adrese. Takođe potrebno je da korisnik unese šifru koja će zadovoljiti sledeće uslove:
+Kada kornisnik instalira aplikaciju od njega se zahteva da se uloguje na aplikaciju. Ukoliko korisnik nema nalog, postoji opcija da kroz aplikaciju napravi nalog. Kada odabere da napravi nalog, korisniku se otvara sledeći prozor \ref{fig:registracijaKorisnika} u kome mu se trazi da unese podatke o email adresi i šifri. Potrebno je da korisnik prosledi validnu email adresu. Aplikacija poseduje i validaciju email adrese. Takođe potrebno je da korisnik unese šifru koja će zadovoljiti sledeće uslove:
 
 \begin{enumerate}
   \item Sadrži barem 8 karaktera.
@@ -920,7 +919,7 @@ Ukoliko korisnik unese šifru ili email koji ne zadovoljavaju uslove unosa, apli
  
 Kada korisnik potvrdi nalog, omogućava mu se prijavljivanje na aplikaciju. Korisnik to čini preko prozora za prijavljivanje. Potrebno je da korisnik unese email kao korisničko ime i šifru. Ukoliko korisnik ne unese jedno od obaveznih polja, aplikacija izbacuje grešku. Aplikacija takođe validira da je korisničko ime u formatu emaila. Za slučaj da korisnik unese pogrešno korisničko ime, odnosno unese za korisnika koji nije registrovan na platformi, aplikacija izbacuje poruku da zadati korisnik ne postoji. Za slučaj da korisnik unese ispravano korisničko ime a neispravanu šifru, aplikacija obaveštava korisnika da prosleđena šifra nije ispravna.
  
-Kada se prijavi na aplikaciju, korisniku se pokazuje lista lokacija bicikli. Na istom prozoru postoji mogućnost da se korisnik odjavi sa aplikacije. Odabirom lokacije korisnik se prebacuje na sledeći prozor\ref{fig:odabirBicikle} gde dobija listu dostupnih bicikli. Korisnik ne može da dobije u ponudi biciklu koju je neki drugi korisnik iznajmio, već dobija samo bicikle koje on može da iznajmi. Pored bicikli korisniku je ostavljena mogućnost da se odjavi sa aplikacije. Kada jednom odabere biciklu, pritiskom na dugme, korisnik može da je iznajmi i tada prelazi na sledeći ekran. Kada iznajmi biciklu, korisniku na ekranu se pojavljuje štoperica koja služi da naznači koliko je dugo bicikla iznajmljena. Sa tog prozora korsinik može da prekine iznajmljivanje bicikle i tada se vraća na prethodni prozor gde mu aplikacija nudi spisak dostupnih bicikli za zadatu lokaciju. Jednom odabrana lokacija ostaje upamćena dok je korisnik ne promeni pa iz tog razloga korisnik se vraća na spisak bicikli za inicijalno odabranu aplikaciju. Korisnik ima mogućnost da se vrati sa prozora bicikli na prozor izabranih lokacija i da promeni lokaciju.
+Kada se prijavi na aplikaciju, korisniku se pokazuje lista lokacija bicikli. Na istom prozoru postoji mogućnost da se korisnik odjavi sa aplikacije. Odabirom lokacije korisnik se prebacuje na sledeći prozor \ref{fig:odabirBicikle} gde dobija listu dostupnih bicikli. Korisnik ne može da dobije u ponudi biciklu koju je neki drugi korisnik iznajmio, već dobija samo bicikle koje on može da iznajmi. Pored bicikli korisniku je ostavljena mogućnost da se odjavi sa aplikacije. Kada jednom odabere biciklu, pritiskom na dugme, korisnik može da je iznajmi i tada prelazi na sledeći ekran. Kada iznajmi biciklu, korisniku na ekranu se pojavljuje štoperica koja služi da naznači koliko je dugo bicikla iznajmljena. Sa tog prozora korsinik može da prekine iznajmljivanje bicikle i tada se vraća na prethodni prozor gde mu aplikacija nudi spisak dostupnih bicikli za zadatu lokaciju. Jednom odabrana lokacija ostaje upamćena dok je korisnik ne promeni pa iz tog razloga korisnik se vraća na spisak bicikli za inicijalno odabranu aplikaciju. Korisnik ima mogućnost da se vrati sa prozora bicikli na prozor izabranih lokacija i da promeni lokaciju.
  
 
 \begin{figure}[!ht]
@@ -946,10 +945,10 @@ Kako servis koristi AWS Cognito servis za autentifikaciju i autorizaciju, proces
 \end{figure}
 
  
-Funkcionalnosti aplikacije korisnika koji je admin i regularnog korisnika se razlikuju. Regularan korisnik je u mogućnosti da iznajmljuje bicikle dok ta operacije nije omogućena admin korisniku. Nakon što se admin korisnik uloguje u aplikaciju na raspolaganje mu se stavlja izbor lokacije i opcija da doda novu biciklu u sistem. Ukoliko korisnik odabere lokaciju, aplikacija mu izlistava sve bicikle za tu lokaciju. To znači da admin korisnik može da vidi i bicikle koje u iznajmljene, one koje su deaktivirane i one koje su aktivne a ne iznajmljene. Ukoliko je bicikla deaktivirana to znači da neće biti stavljena na raspologanje regularnim korisnicima, niko neće moći da je iznajmi. Ova funkcionalnost je uvedena za slučaj da bicikla mora da ide u servis pa se ne može ponuditi korisniku. Odabirom bicikle, admin korisnik može da je aktivira, deaktivira ili obriše pritiskom na dugme. Važno je napomenuti da admin korisnik ne može da deaktivira ili obriše biciklu koju neko trenutno koristi i u slučaju da to pokuša, aplikacija vraća grešku. Kada jednom admin korisnik deaktivira biciklu, ona više neće biti stavljena na raspolaganje korisniku. Ukoliko pak admin korisnik obiše biciklu, servis je biriše iz baze pa više ni admin korisnik a ni regularni korisnik neće moći da je vidi kroz aplikaciju. Na slici\ref{fig:adminKorisnikInterfejs} se može videti primer interfejsa za admin korisnike.
+Funkcionalnosti aplikacije korisnika koji je admin i regularnog korisnika se razlikuju. Regularan korisnik je u mogućnosti da iznajmljuje bicikle dok ta operacije nije omogućena admin korisniku. Nakon što se admin korisnik uloguje u aplikaciju na raspolaganje mu se stavlja izbor lokacije i opcija da doda novu biciklu u sistem. Ukoliko korisnik odabere lokaciju, aplikacija mu izlistava sve bicikle za tu lokaciju. To znači da admin korisnik može da vidi i bicikle koje u iznajmljene, one koje su deaktivirane i one koje su aktivne a ne iznajmljene. Ukoliko je bicikla deaktivirana to znači da neće biti stavljena na raspologanje regularnim korisnicima, niko neće moći da je iznajmi. Ova funkcionalnost je uvedena za slučaj da bicikla mora da ide u servis pa se ne može ponuditi korisniku. Odabirom bicikle, admin korisnik može da je aktivira, deaktivira ili obriše pritiskom na dugme. Važno je napomenuti da admin korisnik ne može da deaktivira ili obriše biciklu koju neko trenutno koristi i u slučaju da to pokuša, aplikacija vraća grešku. Kada jednom admin korisnik deaktivira biciklu, ona više neće biti stavljena na raspolaganje korisniku. Ukoliko pak admin korisnik obiše biciklu, servis je biriše iz baze pa više ni admin korisnik a ni regularni korisnik neće moći da je vidi kroz aplikaciju. Na Slici \ref{fig:adminKorisnikInterfejs} se može videti primer interfejsa za admin korisnike.
 
 
-Pored operacija aktiviranja, deaktiviranja i brisanja bicikle, admin korisniku se stavlja na raspolaganje i operacija kreiranja bicikle. Korisnik aktivira aktivnost pritiskom na drugme za kreiranje bicikle. Zatim se korisnik prebacuje na prozor\ref{fig:kreiranjeNovihBicikli} za kreiranje bicikle gde se traži da unese podatke o proizvođaču, godini proizvodnje, lokaciji. Aplikacija validira podatke i u slučaju da nisu uneta sva polja ili unosi nisu validni, aplikacija neće dozvoliti kreiranje bicikle i obavestiće korisnika koje polje treba da se promeni. Kada verifikacija prođe, aplikacija šalje zahtev servisu i korisnik se obaveštava o uspešnosti operacije. Na istom prozoru korisniku je omogućeno i da se vrati na prethodni ekran i prekine proces kreiranja bicikle. Takođe korisniku je omogućeno da se odjavi sa aplikacije pritiskom na dugme.
+Pored operacija aktiviranja, deaktiviranja i brisanja bicikle, admin korisniku se stavlja na raspolaganje i operacija kreiranja bicikle. Korisnik aktivira aktivnost pritiskom na drugme za kreiranje bicikle. Zatim se korisnik prebacuje na prozor \ref{fig:kreiranjeNovihBicikli} za kreiranje bicikle gde se traži da unese podatke o proizvođaču, godini proizvodnje, lokaciji. Aplikacija validira podatke i u slučaju da nisu uneta sva polja ili unosi nisu validni, aplikacija neće dozvoliti kreiranje bicikle i obavestiće korisnika koje polje treba da se promeni. Kada verifikacija prođe, aplikacija šalje zahtev servisu i korisnik se obaveštava o uspešnosti operacije. Na istom prozoru korisniku je omogućeno i da se vrati na prethodni ekran i prekine proces kreiranja bicikle. Takođe korisniku je omogućeno da se odjavi sa aplikacije pritiskom na dugme.
  
 \begin{figure}[!ht]
   \centering
